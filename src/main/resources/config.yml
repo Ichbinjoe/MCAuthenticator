@@ -1,0 +1,6 @@
+Prefix: "&8&l[&bCow&cSecurity&8&l] "
+Server-IP: "cowcraft.net"
+Permissions:
+  Staff: "user.is.staff"
+  # Reseting the password of a super staff can only be done if you delete the secret key in the actual file. This is done for extra security for those users.
+  Lock: "user.is.super.staff"
