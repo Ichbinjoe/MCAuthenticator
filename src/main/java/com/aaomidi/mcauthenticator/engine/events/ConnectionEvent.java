@@ -11,6 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.logging.Level;
 
@@ -52,5 +53,18 @@ public class ConnectionEvent implements Listener {
         }
         StringManager.sendMessage(player, "&dPlease enter your authentication code using Google Authenticator: ");
         instance.getDataManager().saveFile();
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e){
+        Player player = e.getPlayer();
+        User user = instance.getDataManager().getDataFile().getUser(player.getUniqueId());
+        if (user == null) {
+            return;
+        }
+
+        if(!user.isAuthenticated() && user.isFirstTime()){
+            user.setSecret(null);
+        }
     }
 }

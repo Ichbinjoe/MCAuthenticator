@@ -20,6 +20,10 @@
             <id>vault</id>
             <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
         </repository>
+        <repository>
+            <id>fanciful-mvn-repo</id>
+            <url>http://repo.franga2000.com/artifactory/public</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -44,6 +48,11 @@
             <groupId>mkremins</groupId>
             <artifactId>fanciful</artifactId>
             <version>0.3.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.2.1</version>
         </dependency>
     </dependencies>
 

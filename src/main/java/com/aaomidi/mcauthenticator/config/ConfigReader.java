@@ -14,6 +14,7 @@ public class ConfigReader {
     private static String serverIP;
     private static String staffPermission;
     private static String lockPermission;
+    private static Boolean mapBasedQR;
 
     public static String getPrefix() {
         if (prefix == null) {
@@ -49,6 +50,14 @@ public class ConfigReader {
         serverIP = null;
         staffPermission = null;
         lockPermission = null;
+        mapBasedQR = null;
         StringManager.setPrefix(getPrefix());
+    }
+
+    public static boolean useMapQR(){
+        if(mapBasedQR == null){
+            mapBasedQR = fileConfiguration.getBoolean("UseMapBasedQR", false);
+        }
+        return mapBasedQR;
     }
 }

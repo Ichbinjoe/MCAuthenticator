@@ -43,6 +43,8 @@ public class ChatEvent implements Listener {
         if (result) {
             StringManager.sendMessage(player, "&bYou have been authenticated.");
             user.setAuthenticated(true);
+            if(user.isViewingQRCode())
+                user.stopViewingQRMap(player);
             user.setInetAddress(player.getAddress().getAddress());
             instance.getDataManager().saveFile();
         } else {
