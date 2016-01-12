@@ -3,6 +3,7 @@ package com.aaomidi.mcauthenticator.util;
 
 import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -38,7 +39,7 @@ public class StringManager {
 
     public static void log(String s) {
         String msg = prefix + ": " + s;
-        System.out.print(msg);
+        Bukkit.getConsoleSender().sendMessage(colorize(msg));
     }
 
     public static void sendMessage(CommandSender c, String s, Object... format) {

@@ -37,7 +37,6 @@ public class ChatEvent implements Listener {
         } catch (NumberFormatException ex) {
             code = -1;
         }
-        StringManager.log(Level.SEVERE, code + "");
 
         boolean result = user.isCorrect(code);
         if (result) {

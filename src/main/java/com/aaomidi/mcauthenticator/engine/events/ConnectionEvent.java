@@ -25,7 +25,7 @@ public class ConnectionEvent implements Listener {
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
-        StringManager.log(Level.INFO, "&d" + player.hasPermission(ConfigReader.getStaffPermission()) + "");
+        StringManager.log("&dIs staff member:" + player.hasPermission(ConfigReader.getStaffPermission()) + "");
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
