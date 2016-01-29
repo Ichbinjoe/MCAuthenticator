@@ -1,7 +1,6 @@
 package com.aaomidi.mcauthenticator.engine.events;
 
 import com.aaomidi.mcauthenticator.MCAuthenticator;
-import com.aaomidi.mcauthenticator.config.ConfigReader;
 import com.aaomidi.mcauthenticator.model.User;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
@@ -28,7 +27,7 @@ public class MoveEvent implements Listener {
 
         if (from.getBlockX() == to.getBlockX()
                 && from.getBlockY() == to.getBlockY()
-                && from.getBlockZ() == to.getBlockZ() && !ConfigReader.useMapQR()) {
+                && from.getBlockZ() == to.getBlockZ() && !instance.getC().isMapBasedQR()) {
             return;
         }
 
@@ -39,7 +38,7 @@ public class MoveEvent implements Listener {
 
         if (user.isFirstTime()) {
             // StringManager.sendMessageWithoutColor(player, ChatColor.RED + "Visit the following link to see the QR code:\n" + ChatColor.AQUA + user.createQRCode(player.getName()));
-            if(ConfigReader.useMapQR() && user.isViewingQRCode()){
+            if(instance.getC().isMapBasedQR() && user.isViewingQRCode()){
                 player.sendMessage(ChatColor.RED+"Right click your map to view your QR code! Once you have done this, enter your latest code.");
             } else {
                 user.sendFancyQRMessage(player);

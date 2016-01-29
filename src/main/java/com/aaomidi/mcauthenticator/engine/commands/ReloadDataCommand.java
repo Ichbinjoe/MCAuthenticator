@@ -1,7 +1,6 @@
 package com.aaomidi.mcauthenticator.engine.commands;
 
 import com.aaomidi.mcauthenticator.MCAuthenticator;
-import com.aaomidi.mcauthenticator.config.ConfigReader;
 import com.aaomidi.mcauthenticator.model.AuthCommand;
 import com.aaomidi.mcauthenticator.model.User;
 import com.aaomidi.mcauthenticator.util.StringManager;
@@ -24,7 +23,7 @@ public class ReloadDataCommand extends AuthCommand {
         StringManager.sendMessage(commandSender, "&bSuccessfully reloaded data file!");
         for (Player player : Bukkit.getOnlinePlayers()) {
             User user = getInstance().getDataManager().getDataFile().getUser(player.getUniqueId());
-            if (user == null && !player.hasPermission(ConfigReader.getStaffPermission())) {
+            if (user == null && !player.hasPermission("mcauthenticator.reload")) {
                 continue;
             }
             getInstance().handlePlayer(player);

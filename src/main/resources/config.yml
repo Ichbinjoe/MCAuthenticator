@@ -1,7 +1,37 @@
-Prefix: "&8&l[&bCow&cSecurity&8&l] "
-Server-IP: "cowcraft.net"
-UseMapBasedQR: true
-Permissions:
-  Staff: "user.is.staff"
-  # Reseting the password of a super staff can only be done if you delete the secret key in the actual file. This is done for extra security for those users.
-  Lock: "user.is.super.staff"
+#This is the key that will be by default displayed in the user's authentication
+#app. This may be whatever you want, but we suggest making it your server name
+#or some other identifier.
+serverIp: "cowcraft.net"
+
+#Sets whether or not to use the in game map based QR display.
+#If this is set to true, when the user is setting up their 2FA,
+#the plugin will give the user a map, and force them to then scan
+#the code and insert it.
+#
+#If this is set to false, when the user is setting up their 2FA,
+#the plugin will instead send a link to a public Google webpage which
+#will display the QR code for them.
+useMapBasedQR: true
+
+permissions:
+  #When a user has the below permission, the user will be forced to
+  #use 2FA. When the user next joins, they will be forced to set up 2FA.
+
+  #If not defined, by default this is 'mcauthenticator.2fa'
+  2fa: "mcauthenticator.2fa"
+
+  #When a user has the force lock permission, their 2FA may only be reset
+  #from within console. This is an added level of security for those who
+  #want it.
+
+  #If not defined, by default this is 'mcauthenticator.2falock'
+  forceLock: "mcauthenticator.2falock"
+
+  #Gives staff members the ability to reset other player's 2FA codes.
+  #Default: 'mcauthenticator.reset'
+  reset2fa: "mcauthenticator.reset"
+
+#Messages section. Each message uses standard '&' color codes.
+#A message can be split into multiple lines using the \n character.
+messages:
+  prefix: "&8[&4Auth&8] "

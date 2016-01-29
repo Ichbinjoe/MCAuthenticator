@@ -1,6 +1,6 @@
 package com.aaomidi.mcauthenticator.model;
 
-import com.aaomidi.mcauthenticator.config.ConfigReader;
+import com.aaomidi.mcauthenticator.MCAuthenticator;
 import com.aaomidi.mcauthenticator.map.ImageMapRenderer;
 import com.aaomidi.mcauthenticator.util.StringManager;
 import com.google.zxing.BarcodeFormat;
@@ -19,13 +19,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.MapMeta;
-import org.bukkit.map.MapCanvas;
-import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.util.UUID;
 
@@ -63,6 +58,7 @@ public class User {
     @Getter
     private transient boolean isViewingQRCode = false;
     private transient ItemStack qrMapReplacedItem = null;
+    private transient MCAuthenticator mcAuthenticator = null;
 
     public GoogleAuthenticator getGoogleAuthenticator() {
         if (googleAuthenticator == null) {
@@ -98,7 +94,7 @@ public class User {
         fancyMessage = null;
         updateKey();
         StringManager.sendMessage(player, "&cHello &d%s &cyour new authentication key has been created:\n&b&l%s", player.getName(), getSecret());
-        if(ConfigReader.useMapQR()){
+        if(mcAuthenticator.getC().isMapBasedQR()){
             startViewingQRMap(player);
         } else {
             this.sendFancyQRMessage(player);
@@ -166,7 +162,7 @@ public class User {
 
     public BitMatrix generateQRCode(String username) throws WriterException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        return qrCodeWriter.encode(String.format(encodeFormat, username, ConfigReader.getServerIP(), secret), BarcodeFormat.QR_CODE, 128, 128);
+        return qrCodeWriter.encode(String.format(encodeFormat, username, mcAuthenticator.getC().getServerIP(), secret), BarcodeFormat.QR_CODE, 128, 128);
     }
 
 }

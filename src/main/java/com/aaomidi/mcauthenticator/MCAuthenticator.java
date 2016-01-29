@@ -1,13 +1,12 @@
 package com.aaomidi.mcauthenticator;
 
-import com.aaomidi.mcauthenticator.config.ConfigReader;
 import com.aaomidi.mcauthenticator.engine.CommandHandler;
 import com.aaomidi.mcauthenticator.engine.DataManager;
 import com.aaomidi.mcauthenticator.engine.events.*;
-import com.aaomidi.mcauthenticator.map.ImageMapRenderer;
 import com.aaomidi.mcauthenticator.model.User;
 import com.aaomidi.mcauthenticator.util.StringManager;
 import lombok.Getter;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,17 +21,19 @@ public class MCAuthenticator extends JavaPlugin {
     private DataManager dataManager;
     @Getter
     private CommandHandler commandHandler;
+
     @Getter
-    private ImageMapRenderer imageMapRenderer;
+    private Config c;
+
+    private File configurationFile;
 
     @Override
     public void onLoad() {
         if (!new File(this.getDataFolder(), "config.yml").exists()) {
             this.saveDefaultConfig();
         }
-        ConfigReader.setFileConfiguration(this.getConfig());
         dataManager = new DataManager(this);
-        StringManager.setPrefix(ConfigReader.getPrefix());
+        reload();
         StringManager.setLogger(this.getLogger());
     }
 
@@ -40,15 +41,14 @@ public class MCAuthenticator extends JavaPlugin {
     public void onEnable() {
         commandHandler = new CommandHandler(this);
         commandHandler.registerCommands();
-        this.setupEvents();
-    }
 
-
-    private void setupEvents() {
         registerEvent(new ChatEvent(this));
         registerEvent(new ConnectionEvent(this));
         registerEvent(new MoveEvent(this));
         registerEvent(new InventoryEvent(this));
+
+        this.configurationFile = new File(getDataFolder(), "config.yml");
+        reload();
     }
 
     private void registerEvent(Listener listener) {
@@ -57,14 +57,16 @@ public class MCAuthenticator extends JavaPlugin {
 
     public void handlePlayer(Player player) {
 
+        //TODO: Allow all players to do 2fa!
+
         boolean lock = false;
-        if (!player.hasPermission(ConfigReader.getStaffPermission())) {
+        /*if (!player.hasPermission(ConfigReader.getStaffPermission())) {
             return;
         }
 
         if (player.hasPermission(ConfigReader.getLockPermission())) {
             lock = true;
-        }
+        }*/
 
         User user = this.getDataManager().getDataFile().getUser(player.getUniqueId());
         if (user == null) {
@@ -73,5 +75,14 @@ public class MCAuthenticator extends JavaPlugin {
         }
         user.setLocked(lock);
         user.setAuthenticated(false);
+    }
+
+    public void reload() {
+        if(!configurationFile.exists()){
+            getDataFolder().mkdirs();
+            saveResource(configurationFile.getName(), false);
+        }
+        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(configurationFile);
+        this.c = new Config(cfg, getLogger());
     }
 }

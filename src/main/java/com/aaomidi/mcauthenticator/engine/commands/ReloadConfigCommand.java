@@ -1,7 +1,6 @@
 package com.aaomidi.mcauthenticator.engine.commands;
 
 import com.aaomidi.mcauthenticator.MCAuthenticator;
-import com.aaomidi.mcauthenticator.config.ConfigReader;
 import com.aaomidi.mcauthenticator.model.AuthCommand;
 import com.aaomidi.mcauthenticator.util.StringManager;
 import org.bukkit.command.Command;
@@ -17,8 +16,7 @@ public class ReloadConfigCommand extends AuthCommand {
 
     @Override
     public boolean execute(Command command, CommandSender commandSender, String[] args) {
-        getInstance().reloadConfig();
-        ConfigReader.reload(getInstance().getConfig());
+        getInstance().reload();
 
         StringManager.sendMessage(commandSender, "&bSuccessfully reloaded configuration!");
         return true;

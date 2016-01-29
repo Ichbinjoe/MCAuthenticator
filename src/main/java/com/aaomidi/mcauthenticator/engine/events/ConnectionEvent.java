@@ -1,7 +1,6 @@
 package com.aaomidi.mcauthenticator.engine.events;
 
 import com.aaomidi.mcauthenticator.MCAuthenticator;
-import com.aaomidi.mcauthenticator.config.ConfigReader;
 import com.aaomidi.mcauthenticator.model.User;
 import com.aaomidi.mcauthenticator.util.StringManager;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.logging.Level;
 
 /**
  * Created by amir on 2016-01-11.
@@ -22,16 +18,9 @@ import java.util.logging.Level;
 public class ConnectionEvent implements Listener {
     private final MCAuthenticator instance;
 
-    @EventHandler
-    public void onPlayerLogin(PlayerLoginEvent event) {
-        Player player = event.getPlayer();
-        StringManager.log(Level.INFO, "&d" + player.hasPermission(ConfigReader.getStaffPermission()) + "");
-    }
-
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerConnect(PlayerJoinEvent event) {
         this.instance.handlePlayer(event.getPlayer());
-
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
