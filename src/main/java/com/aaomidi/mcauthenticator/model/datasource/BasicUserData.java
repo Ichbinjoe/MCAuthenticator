@@ -1,6 +1,5 @@
 package com.aaomidi.mcauthenticator.model.datasource;
 
-import com.aaomidi.mcauthenticator.MCAuthenticator;
 import com.aaomidi.mcauthenticator.model.UserData;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -17,7 +16,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class BasicUserData implements UserData {
 
-    private final MCAuthenticator authenticator;
     private final UUID id;
     private InetAddress inetAddress;
     private String secret;
@@ -53,7 +51,7 @@ public class BasicUserData implements UserData {
         if (p == null)
             return locked;
         else
-            return p.hasPermission(authenticator.getC().getLock2faPerm());
+            return p.hasPermission("mcauthenticator.lock");
     }
 
     @Override

@@ -33,8 +33,11 @@ public class MCAuthenticator extends JavaPlugin {
     @Getter
     private Config c;
     private File configurationFile;
-    @Getter
-    private UserDataSource dataSource;
+
+    public UserDataSource getDataSource() {
+        return c.getDataSource();
+    }
+
     @Getter
     private final UserCache cache = new UserCache(this);
 
@@ -60,7 +63,7 @@ public class MCAuthenticator extends JavaPlugin {
     public void handlePlayer(Player player, UserData data) throws IOException, SQLException {
         User user = this.getCache().join(player.getUniqueId(), data);
         if (user.authenticated()) {
-            if (player.hasPermission(c.getForce2faPerm())) {
+            if (player.hasPermission("mcauthenticator.lock")) {
                 //They have no userData, but they should have 2fa forced.
                 user.init2fa(player);
             }
@@ -70,9 +73,9 @@ public class MCAuthenticator extends JavaPlugin {
             } else {
                 if (!user.authenticate(player.getAddress().getAddress())) {
                     //User must enter code
+                    user.storeInventory(player);
                     c.send(player, c.message("authenticationPrompt"));
-                }
-                else {
+                } else {
                     c.send(player, c.message("ipPreAuthenticated"));
                 }
             }
@@ -101,7 +104,7 @@ public class MCAuthenticator extends JavaPlugin {
             try {
                 handlePlayer(p, getDataSource().getUser(p.getUniqueId()));
             } catch (Exception e) {
-                getLogger().log(Level.SEVERE,"There was an error loading player "+p.getName(), e);
+                getLogger().log(Level.SEVERE, "There was an error loading player " + p.getName(), e);
             }
         }
     }
@@ -119,9 +122,9 @@ public class MCAuthenticator extends JavaPlugin {
             @Override
             public void run() {
                 try {
-                    dataSource.save();
+                    getDataSource().save();
                 } catch (Exception e) {
-                    getLogger().log(Level.SEVERE, "There was an error saving the datasource: ",e);
+                    getLogger().log(Level.SEVERE, "There was an error saving the datasource: ", e);
                 }
             }
         });

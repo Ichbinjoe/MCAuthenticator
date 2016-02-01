@@ -25,8 +25,6 @@ import java.util.logging.Logger;
 public class Config {
 
     private final String serverIP;
-    private final String force2faPerm;
-    private final String lock2faPerm;
     private final boolean mapBasedQR;
     @Getter
     private final UserDataSource dataSource;
@@ -44,8 +42,6 @@ public class Config {
             tempServerIP = "MCAuthenticator";
         }
         this.serverIP = tempServerIP;
-        this.force2faPerm = section.getString("permissions.2fa", "mcauthenticator.2fa");
-        this.lock2faPerm = section.getString("permissions.forceLock", "mcauthenticator.2faLock");
         this.mapBasedQR = section.getBoolean("useMapBasedQR", true);
         String backing = section.getString("dataBacking.type", "single");
         switch (backing) {
@@ -60,6 +56,7 @@ public class Config {
                 this.dataSource = new MySQLUserDataSource(mysql.getString("url","jdbc:mysql://localhost:3306/db"),
                         mysql.getString("username"),
                         mysql.getString("password"), auth);
+                break;
             default:
                 throw new IllegalArgumentException("The dataBacking type '"+backing+"' doesn't exist.");
         }

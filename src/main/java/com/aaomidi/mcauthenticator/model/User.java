@@ -18,7 +18,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
+import java.io.IOException;
 import java.net.InetAddress;
+import java.sql.SQLException;
 
 /**
  * @author Joseph Hirschfeld <joe@ibj.io>
@@ -47,8 +49,8 @@ public class User {
      */
     @Getter
     private boolean isViewingQRCode = false;
-    private transient ItemStack qrMapReplacedItem = null;
 
+    private ItemStack[] inventory = null;
 
     public boolean authenticated() {
         return userData == null || authenticated;
@@ -84,8 +86,9 @@ public class User {
         if (isViewingQRCode)
             stopViewingQRMap(player);
         userData.setLastAddress(player.getAddress().getAddress());
-        userData.setLocked(player.hasPermission(mcAuthenticator.getC().getLock2faPerm()));
+        userData.setLocked(player.hasPermission("mcauthenticator.lock"));
         mcAuthenticator.save();
+        reverseInventory(player);
         return true;
     }
 
@@ -120,19 +123,21 @@ public class User {
                 return true;
             }
 
-            qrMapReplacedItem = p.getItemInHand();
+            storeInventory(p);
             isViewingQRCode = true;
 
             ItemStack itemStack = new ItemStack(Material.MAP);
             MapView map = Bukkit.createMap(p.getWorld());
             itemStack.setDurability(map.getId());
+            itemStack.setAmount(0);
+            p.getInventory().setHeldItemSlot(0);
             p.setItemInHand(itemStack);
 
             Location playerLocation = p.getLocation();
             playerLocation.setPitch(90);
             p.teleport(playerLocation);
 
-            for(MapRenderer r : map.getRenderers()) {
+            for (MapRenderer r : map.getRenderers()) {
                 map.removeRenderer(r);
             }
 
@@ -181,8 +186,7 @@ public class User {
     }
 
     public void stopViewingQRMap(Player p) {
-        p.setItemInHand(qrMapReplacedItem);
-        qrMapReplacedItem = null;
+        reverseInventory(p);
         isViewingQRCode = false;
     }
 
@@ -190,8 +194,9 @@ public class User {
         if (isViewingQRCode)
             stopViewingQRMap(p);
 
+        reverseInventory(p);
         if (isFirstTime && !authenticated)
-            //Take out user, since they never really authenticated. This way they can join again.
+        //Take out user, since they never really authenticated. This way they can join again.
         {
             mcAuthenticator.getDataSource().destroyUser(p.getUniqueId());
             mcAuthenticator.save();
@@ -201,4 +206,28 @@ public class User {
     public boolean isLocked(Player p) {
         return userData != null && userData.isLocked(p);
     }
+
+    public void storeInventory(Player p) {
+        if (inventory != null) throw new IllegalStateException("Cannot double store inventory!");
+        inventory = p.getInventory().getContents();
+        p.getInventory().setContents(new ItemStack[36]);
+    }
+
+    public void reverseInventory(Player p) {
+        if (inventory != null) {
+            p.getInventory().setContents(inventory);
+            inventory = null;
+        }
+    }
+
+    public void disable(Player p) {
+        if(userData == null) return;
+        if(isViewingQRCode) {
+            stopViewingQRMap(p);
+        }
+        mcAuthenticator.getDataSource().destroyUser(userData.getId());
+        userData = null;
+        mcAuthenticator.save();
+    }
+
 }

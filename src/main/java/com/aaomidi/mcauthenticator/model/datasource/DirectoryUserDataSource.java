@@ -60,7 +60,7 @@ public class DirectoryUserDataSource implements UserDataSource {
             JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
             JsonElement lastIp = jsonObject.get("lastIp");
             JsonElement secret = jsonObject.get("secret");
-            return new UpdatableFlagData(mcAuthenticator, updateHook,
+            return new UpdatableFlagData(updateHook,
                     UUID.fromString(jsonObject.get("id").getAsString()),
                     lastIp != null ? InetAddress.getByName(lastIp.getAsString()) : null,
                     secret != null ? secret.getAsString() : null,
@@ -70,7 +70,7 @@ public class DirectoryUserDataSource implements UserDataSource {
 
     @Override
     public UserData createUser(UUID id) {
-        UpdatableFlagData d = new UpdatableFlagData(mcAuthenticator, updateHook, id, null, null, false);
+        UpdatableFlagData d = new UpdatableFlagData(updateHook, id, null, null, false);
         update.add(d);
         return d;
     }

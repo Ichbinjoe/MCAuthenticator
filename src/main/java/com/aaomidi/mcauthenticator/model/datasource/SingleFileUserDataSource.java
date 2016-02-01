@@ -49,7 +49,7 @@ public class SingleFileUserDataSource implements UserDataSource {
 
     @Override
     public UserData createUser(UUID id) {
-        BasicUserData d = new BasicUserData(auth, id, null, null, false);
+        BasicUserData d = new BasicUserData(id, null, null, false);
         data.put(id, d);
         return d;
     }
@@ -89,7 +89,7 @@ public class SingleFileUserDataSource implements UserDataSource {
                 JsonObject obj = data.get(i).getAsJsonObject();
                 JsonElement ip1 = obj.get("ip");
                 String ip = ip1 != null ? ip1.getAsString() : null;
-                BasicUserData adata = new BasicUserData(auth,
+                BasicUserData adata = new BasicUserData(
                         UUID.fromString(obj.get("uuid").getAsString()),
                         ip != null ? InetAddress.getByName(ip) : null,
                         obj.get("secret").getAsString(),

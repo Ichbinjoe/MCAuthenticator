@@ -3,6 +3,7 @@ package com.aaomidi.mcauthenticator.model.datasource;
 import com.aaomidi.mcauthenticator.MCAuthenticator;
 import com.aaomidi.mcauthenticator.model.UserData;
 import com.aaomidi.mcauthenticator.model.UserDataSource;
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.Bukkit;
 
@@ -31,12 +32,14 @@ public class MySQLUserDataSource implements UserDataSource {
                 toUpdate.add(me);
             }
         };
-        pool = new HikariDataSource();
-        pool.setUsername(username);
-        pool.setPassword(password);
-        pool.setJdbcUrl(connectionURL);
-        pool.setMaximumPoolSize(1); //If someone ever needs more than 1 connection to _update_ DB info for this,
-        //I will be genuinely surprised.
+        HikariConfig cfg = new HikariConfig();
+        cfg.setJdbcUrl(connectionURL);
+        cfg.setUsername(username);
+        cfg.setPassword(password);
+        cfg.setMaximumPoolSize(2);
+
+        pool = new HikariDataSource(cfg);
+
         try (Connection c = pool.getConnection()) {
             ResultSet resultSet = c.createStatement().executeQuery("SHOW TABLES;");
             boolean found = false;
@@ -74,7 +77,7 @@ public class MySQLUserDataSource implements UserDataSource {
             p.setString(1, id.toString().replaceAll("-", ""));
             ResultSet rs = p.executeQuery();
             if (rs.next()) {
-                return new UpdatableFlagData(mcAuthenticator, updateHook, id,
+                return new UpdatableFlagData(updateHook, id,
                         InetAddress.getByName(rs.getString("ip")),
                         rs.getString("secret"),
                         rs.getBoolean("locked"));
@@ -86,7 +89,7 @@ public class MySQLUserDataSource implements UserDataSource {
 
     @Override
     public UserData createUser(UUID id) {
-        UpdatableFlagData d = new UpdatableFlagData(mcAuthenticator, updateHook, id, null, null, false);
+        UpdatableFlagData d = new UpdatableFlagData(updateHook, id, null, null, false);
         toUpdate.add(d);
         return d;
     }
@@ -108,10 +111,13 @@ public class MySQLUserDataSource implements UserDataSource {
             for (UpdatableFlagData upd : update) {
                 if (delete.contains(upd.getId())) continue;
                 updateStatement.setString(1, upd.getId().toString().replaceAll("-", ""));
-                updateStatement.setString(2, upd.getLastAddress().getHostAddress());
+                InetAddress lastAddress = upd.getLastAddress();
+                String lastHostAddress = null;
+                if (lastAddress != null) lastHostAddress = lastAddress.getHostAddress();
+                updateStatement.setString(2, lastHostAddress);
                 updateStatement.setString(3, upd.getSecret());
                 updateStatement.setBoolean(4, upd.isLocked(null));
-                updateStatement.setString(5, upd.getLastAddress().getHostAddress());
+                updateStatement.setString(5, lastHostAddress);
                 updateStatement.setString(6, upd.getSecret());
                 updateStatement.setBoolean(7, upd.isLocked(null));
                 updateStatement.execute();
@@ -122,6 +128,11 @@ public class MySQLUserDataSource implements UserDataSource {
                 deleteStatement.execute();
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "(MySQLDataSource: "+pool.getJdbcUrl()+")";
     }
 
     @Override

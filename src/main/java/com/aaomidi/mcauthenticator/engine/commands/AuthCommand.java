@@ -15,11 +15,14 @@ public abstract class AuthCommand {
     private final String name;
     @Getter
     private final String permission;
+    @Getter
+    private final String desc;
 
-    public AuthCommand(MCAuthenticator instance, String name, String permission) {
+    public AuthCommand(MCAuthenticator instance, String name, String permission, String description) {
         this.instance = instance;
         this.name = name;
         this.permission = permission;
+        this.desc = description;
     }
 
     public abstract boolean execute(Command command, CommandSender commandSender, String[] args);

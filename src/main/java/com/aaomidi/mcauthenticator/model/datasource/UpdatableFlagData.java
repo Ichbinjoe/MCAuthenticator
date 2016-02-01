@@ -1,8 +1,7 @@
 package com.aaomidi.mcauthenticator.model.datasource;
 
-import com.aaomidi.mcauthenticator.MCAuthenticator;
-
 import java.net.InetAddress;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -11,8 +10,8 @@ import java.util.UUID;
  */
 public class UpdatableFlagData extends BasicUserData {
 
-    public UpdatableFlagData(MCAuthenticator authenticator, UpdateHook hook, UUID id, InetAddress inetAddress, String secret, boolean locked) {
-        super(authenticator, id, inetAddress, secret, locked);
+    public UpdatableFlagData(UpdateHook hook, UUID id, InetAddress inetAddress, String secret, boolean locked) {
+        super(id, inetAddress, secret, locked);
         this.hook = hook;
     }
 
@@ -20,20 +19,23 @@ public class UpdatableFlagData extends BasicUserData {
 
     @Override
     public void setLastAddress(InetAddress inetAddress) {
+        InetAddress a = getLastAddress();
         super.setLastAddress(inetAddress);
-        hook.update(this);
+        if(a != inetAddress) hook.update(this);
     }
 
     @Override
     public void setSecret(String secret) {
+        String a = getSecret();
         super.setSecret(secret);
-        hook.update(this);
+        if(!Objects.equals(a, secret)) hook.update(this);
     }
 
     @Override
     public void setLocked(boolean lock) {
+        boolean a = isLocked(null);
         super.setLocked(lock);
-        hook.update(this);
+        if (a != lock) hook.update(this);
     }
 
 }

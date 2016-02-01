@@ -15,20 +15,21 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * Created by amir on 2016-01-11.
+ * @author Joseph Hirschfeld <joe@ibj.io>
+ * @date 2/1/16
  */
-public class ResetCommand extends AuthCommand {
-    public ResetCommand(MCAuthenticator instance) {
-        super(instance, "reset", "mcauthenticator.reset", "Resets a player's 2FA code.");
+public class DisableCommand extends AuthCommand {
+    public DisableCommand(MCAuthenticator instance) {
+        super(instance, "disable", "mcauthenticator.disable", "Disables 2FA on an account");
     }
 
     @Override
-    public boolean execute(final Command command, final CommandSender commandSender, String[] args) {
+    public boolean execute(Command command, final CommandSender commandSender, String[] args) {
         if (args.length == 0) {
             //Self
             if (!(commandSender instanceof Player)) {
-                getInstance().getC().sendDirect(commandSender, "&cYou must specify a player to reset 2FA on.\n" +
-                        "&c    /auth reset <player>");
+                getInstance().getC().sendDirect(commandSender, "&cYou must specify a player to enable 2FA on.\n" +
+                        "&c    /auth enable <player>");
                 return true;
             }
 
@@ -47,15 +48,14 @@ public class ResetCommand extends AuthCommand {
             u.disable(sndr);
             getInstance().getC().send(commandSender, getInstance().getC().message("selfDisabled"));
         } else if (args.length == 1) {
-            if (!commandSender.hasPermission("mcauthenticator.reset.other")) {
-                getInstance().getC().sendDirect(commandSender, "&cYou are not permitted to enable other people's 2FA!");
+            if (!commandSender.hasPermission("mcauthenticator.disable.other")) {
+                getInstance().getC().sendDirect(commandSender, "&cYou are not permitted to disable other people's 2FA!");
                 return true;
             }
             final String playerQuery = args[0];
             getInstance().async(new Runnable() {
                 @Override
                 public void run() {
-                    //getOfflinePlayer can make a web query, and isn't safe to run in sync.
                     final OfflinePlayer player = Bukkit.getOfflinePlayer(playerQuery);
                     if (player == null) {
                         getInstance().getC().sendDirect(commandSender, "&cThe player &4'" + playerQuery + "'&c does not exist!");
@@ -64,23 +64,21 @@ public class ResetCommand extends AuthCommand {
 
                     if (player.isOnline()) {
                         final User u = getInstance().getCache().get(player.getUniqueId());
-                        if (!u.is2fa()) {
-                            getInstance().getC().sendDirect(commandSender, "&cThe player &4'" + playerQuery + "'&c does not have 2FA enabled.");
+                        if (!(u.is2fa() && !u.mustSetUp2FA())) {
+                            getInstance().getC().sendDirect(commandSender, "&cThe player &4'" + playerQuery + "'&c already has 2FA disabled.");
                             return;
                         }
 
-                        if (!u.mustSetUp2FA()) {
-                            getInstance().getC().sendDirect(commandSender, "&cThe player is already in reset mode.");
+                        if(u.isLocked(((Player) player)) && !(commandSender instanceof ConsoleCommandSender)) {
                             return;
                         }
 
                         getInstance().sync(new Runnable() {
                             @Override
                             public void run() {
-                                u.invalidateKey();
-                                u.init2fa((Player) player);
-                                getInstance().getC().send(commandSender, getInstance().getC().message("otherReset").replaceAll("%player%", commandSender.getName()));
-                                getInstance().getC().sendDirect(commandSender, "&7You have reset 2FA on " + player.getName() + "'s account.");
+                                u.disable(((Player) player));
+                                getInstance().getC().send(((Player) player), getInstance().getC().message("otherDisable").replaceAll("%player%", commandSender.getName()));
+                                getInstance().getC().sendDirect(commandSender, "&7You have disabled 2FA on "+player.getName()+"'s account.");
                             }
                         });
                     } else {
@@ -97,29 +95,22 @@ public class ResetCommand extends AuthCommand {
                             return;
                         }
 
-                        if (d == null) {
-                            getInstance().getC().sendDirect(commandSender, "&4" + player.getName() + " doesn't have 2FA enabled.");
-                            return;
-                        } else {
-                            if (d.getSecret() == null) {
-                                getInstance().getC().sendDirect(commandSender, "&4" + player.getName() + " is already in reset mode. They will reset their code when they next log in.");
-                            } else {
-                                if (d.isLocked(null) && !(commandSender instanceof ConsoleCommandSender)) {
-                                    getInstance().getC().sendDirect(commandSender, "&c This user has the locked permission! You cannot reset 2FA for this person unless you are in console!");
-                                } else {
-                                    d.setSecret(null);
-                                    d.setLastAddress(null);
-                                    getInstance().getC().sendDirect(commandSender, "&7You have reset this player's 2FA. They will reset their code when they next log in.");
-                                    getInstance().save();
-                                }
+                        if (d != null) {
+                            if(d.isLocked(((Player) player)) && !(commandSender instanceof ConsoleCommandSender)) {
+                                getInstance().getC().sendDirect(commandSender,"&c This user has the locked permission! You cannot disable 2FA for this person unless you are in console!");
+                                return;
                             }
-                            getInstance().getC().sendDirect(commandSender, "&4'" + player.getName() + "'&c already has 2FA enabled!");
+                            //Take out the entry
+                            getInstance().getDataSource().destroyUser(player.getUniqueId());
+                            getInstance().getC().sendDirect(commandSender, "&7Disabled 2FA for " + player.getName() + ".");
+                        } else {
+                            getInstance().getC().sendDirect(commandSender, "&4'" + player.getName() + "'&c already has 2FA disabled!");
                         }
                     }
                 }
             });
         } else {
-            getInstance().getC().sendDirect(commandSender, "&c Invalid usage: /auth reset" + (commandSender.hasPermission("mcauthenticator.reset.other") ? " [player]" : ""));
+            getInstance().getC().sendDirect(commandSender, "&c Invalid usage: /auth disable" + (commandSender.hasPermission("mcauthenticator.disable.other") ? " [player]" : ""));
         }
         return true;
     }

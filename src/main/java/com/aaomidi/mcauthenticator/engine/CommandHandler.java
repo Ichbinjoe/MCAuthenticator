@@ -1,9 +1,7 @@
 package com.aaomidi.mcauthenticator.engine;
 
 import com.aaomidi.mcauthenticator.MCAuthenticator;
-import com.aaomidi.mcauthenticator.engine.commands.ReloadConfigCommand;
-import com.aaomidi.mcauthenticator.engine.commands.ResetCommand;
-import com.aaomidi.mcauthenticator.engine.commands.AuthCommand;
+import com.aaomidi.mcauthenticator.engine.commands.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,11 +28,17 @@ public class CommandHandler implements CommandExecutor {
     public void registerCommands() {
         registerCommand(new ReloadConfigCommand(instance));
         registerCommand(new ResetCommand(instance));
+        registerCommand(new DisableCommand(instance));
+        registerCommand(new EnableCommand(instance));
     }
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command cmd, String commandLabel, String[] args) {
-        if (!cmd.getName().equals("auth")) return false;
+
+        if(!commandSender.hasPermission("mcauthenticator.use")) {
+            instance.getC().sendDirect(commandSender, "&cYou do not have permission to use the authenticator!");
+            return true;
+        }
 
         if (args.length == 0) {
             return printHelp(commandSender);
@@ -59,9 +63,11 @@ public class CommandHandler implements CommandExecutor {
 
     private boolean printHelp(CommandSender commandSender) {
         int i = 1;
-        StringBuilder sb = new StringBuilder("&bPossible commands are: ");
+
+        StringBuilder sb = new StringBuilder("&7Possible commands are: ");
         for (AuthCommand c : commands.values()) {
-            sb.append(String.format("\n &d%d. &b/auth %s", i++, c.getName()));
+            if(commandSender.hasPermission(c.getPermission()))
+                sb.append(String.format("\n &8%d. &7/auth %s &8- &7%s", i++, c.getName(), c.getDesc()));
         }
 
         instance.getC().sendDirect(commandSender, sb.toString());
