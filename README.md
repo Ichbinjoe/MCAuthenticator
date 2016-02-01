@@ -152,3 +152,19 @@ The database connection details should then be set in `dataBacking.mysql`.
 The default connection url is `jdbc:mysql://localhost:3000/db`, with the format
 `jdbc:mysql://<ip>:<port>/<databaseName>`. `username` and `password` should also
 be set to the a username and password that is able to access the database.
+
+## Building MCAuthenticator
+
+To build MCAuthenticator, run `mvn package` in a command terminal, and the
+result of the build will save the jar to `target/MCAuthenticator-<version>.jar`.
+
+## Contributing
+
+We love contributions! Feel free to fork this project and  PR any changes/
+enhancements! Of note, we use the MIT License, which is listed (here)[LICENSE.txt].
+
+## Reporting Issues/Bugs or Suggesting Additions
+
+We request that issues/ suggestions be submitted on the Github issue manager.
+This allows us to be more vigilant of issues, and allow more flexibility in
+managing the project.
