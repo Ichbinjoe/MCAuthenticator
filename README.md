@@ -61,6 +61,7 @@ to perform the command unless they __explicitly__ have the listed permission.
  to reset other user's authentications.
 + `mcauthenticator.reload` (default: console only) - Allows for the user to
  reload the configuration
+ 
 ### Enforcement Permissions
 + `mcauthenticator.lock` (default: op) - Does one of 2 things:
   1. Forces the user to always 2FA enabled, not allowing them to disable or
