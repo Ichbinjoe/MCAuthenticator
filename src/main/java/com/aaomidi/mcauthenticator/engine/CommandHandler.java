@@ -5,6 +5,7 @@ import com.aaomidi.mcauthenticator.engine.commands.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class CommandHandler implements CommandExecutor {
             return printHelp(commandSender, commandLabel);
         }
 
-        if (c.getPermission() != null && !commandSender.hasPermission(c.getPermission())) {
+        if (c.getPermission() != null && !commandSender.hasPermission(c.getPermission()) && !(commandSender instanceof ConsoleCommandSender)) {
             instance.getC().sendDirect(commandSender, "&cYou do not have permission to perform this action!");
             return true;
         }

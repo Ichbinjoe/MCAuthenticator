@@ -104,6 +104,7 @@ public class DisableCommand extends AuthCommand {
                             //Take out the entry
                             getInstance().getDataSource().destroyUser(player.getUniqueId());
                             getInstance().getC().sendDirect(commandSender, "&7Disabled 2FA for " + player.getName() + ".");
+                            getInstance().save();
                         } else {
                             getInstance().getC().sendDirect(commandSender, "&4'" + player.getName() + "'&c already has 2FA disabled!");
                         }

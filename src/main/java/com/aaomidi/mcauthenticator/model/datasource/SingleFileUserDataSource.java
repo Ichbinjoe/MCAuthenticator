@@ -89,10 +89,11 @@ public class SingleFileUserDataSource implements UserDataSource {
                 JsonObject obj = data.get(i).getAsJsonObject();
                 JsonElement ip1 = obj.get("ip");
                 String ip = ip1 != null ? ip1.getAsString() : null;
+                JsonElement secret = obj.get("secret");
                 BasicUserData adata = new BasicUserData(
                         UUID.fromString(obj.get("uuid").getAsString()),
                         ip != null ? InetAddress.getByName(ip) : null,
-                        obj.get("secret").getAsString(),
+                        secret != null ? secret.getAsString() : null,
                         obj.get("locked").getAsBoolean());
                 basicUserData.put(adata.getId(), adata);
             }

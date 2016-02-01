@@ -88,7 +88,7 @@ public class EnableCommand extends AuthCommand {
                             //No 2fa, lets enable a blank data
                             getInstance().getDataSource().createUser(player.getUniqueId());
                             getInstance().getC().sendDirect(commandSender, "&7Enabled 2FA for " + player.getName() + ". They will be set up next time they log in.");
-                            return;
+                            getInstance().save();
                         } else {
                             getInstance().getC().sendDirect(commandSender, "&4'" + player.getName() + "'&c already has 2FA enabled!");
                         }
