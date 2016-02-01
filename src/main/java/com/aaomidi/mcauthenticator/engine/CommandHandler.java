@@ -40,9 +40,7 @@ public class CommandHandler implements CommandExecutor {
             return true;
         }
 
-        if (args.length == 0) {
-            return printHelp(commandSender);
-        }
+        if (args.length == 0) return printHelp(commandSender, commandLabel);
 
         AuthCommand c = commands.get(args[0].toLowerCase());
         String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
@@ -61,13 +59,13 @@ public class CommandHandler implements CommandExecutor {
         return true;
     }
 
-    private boolean printHelp(CommandSender commandSender) {
+    private boolean printHelp(CommandSender commandSender, String label) {
         int i = 1;
 
         StringBuilder sb = new StringBuilder("&7Possible commands are: ");
         for (AuthCommand c : commands.values()) {
             if(commandSender.hasPermission(c.getPermission()))
-                sb.append(String.format("\n &8%d. &7/auth %s &8- &7%s", i++, c.getName(), c.getDesc()));
+                sb.append(String.format("\n &8%d. &7/%s %s &8- &7%s", i++, label, c.getName(), c.getDesc()));
         }
 
         instance.getC().sendDirect(commandSender, sb.toString());
