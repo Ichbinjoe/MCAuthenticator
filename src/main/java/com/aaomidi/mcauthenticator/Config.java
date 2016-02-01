@@ -65,7 +65,7 @@ public class Config {
 
         auth.getLogger().info("Using data source: "+dataSource.toString());
 
-        this.enforceSameIPAuth = section.getBoolean("forceSameIPAuthentication");
+        this.enforceSameIPAuth = section.getBoolean("forceSameIPAuthentication", false);
 
         this.messages = new HashMap<>();
         ConfigurationSection msgCfg = section.getConfigurationSection("messages");
