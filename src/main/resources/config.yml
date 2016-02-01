@@ -1,7 +1,7 @@
 #This is the key that will be by default displayed in the user's authentication
 #app. This may be whatever you want, but we suggest making it your server name
 #or some other identifier.
-serverIp: "cowcraft.net"
+serverIp: "mc.myserver.com"
 
 #Sets whether or not to use the in game map based QR display.
 #If this is set to true, when the user is setting up their 2FA,
@@ -15,7 +15,7 @@ useMapBasedQR: true
 
 #If this option is true, the plugin will not factor into account the last IP of the player, and will force the player to
 #log in each time they are authenticated
-forceSameIPAuthentication: true
+forceSameIPAuthentication: false
 
 dataBacking:
 # This plugin supports 3 independant datastorage mechanisms. At the current time, there is no way to convert between the
@@ -43,7 +43,7 @@ dataBacking:
 #A message can be split into multiple lines using the \n character.
 messages:
   prefix: "&8[&4Auth&8] "
-  authenticationPrompt: "&4This account has 2FA enabled on it. Since you are on another IP than last time, please enter the code displayed on your 2FA device."
+  authenticationPrompt: "&4This account has 2FA enabled on it. Please enter the code displayed on your 2FA device."
   ipPreAuthenticated: "&7You are already authenticated since your IP matched your last log in IP."
   resetPlayer: "&7%player% has reset your 2FA. You will now asked to set up a new one."
   authenticated: "&7You have been authenticated"

@@ -65,7 +65,8 @@ public class CommandHandler implements CommandExecutor {
 
         StringBuilder sb = new StringBuilder("&7Possible commands are: ");
         for (AuthCommand c : commands.values()) {
-            if(commandSender.hasPermission(c.getPermission()))
+            if(commandSender.hasPermission(c.getPermission()) ||
+                    (commandSender instanceof ConsoleCommandSender))
                 sb.append(String.format("\n &8%d. &7/%s %s &8- &7%s", i++, label, c.getName(), c.getDesc()));
         }
 

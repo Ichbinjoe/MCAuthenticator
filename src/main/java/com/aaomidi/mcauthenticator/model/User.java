@@ -62,7 +62,7 @@ public class User {
 
     public boolean authenticate(InetAddress address) {
         if (authenticated()) return true;
-        if (!mcAuthenticator.getC().isEnforceSameIPAuth() ||
+        if (!mcAuthenticator.getC().isEnforceSameIPAuth() &&
                 userData.getLastAddress() != null && userData.getLastAddress().equals(address))
             authenticated = true;
         return authenticated;
