@@ -34,18 +34,21 @@ public class ResetCommand extends AuthCommand {
 
             Player sndr = ((Player) commandSender);
             User u = getInstance().getCache().get(sndr.getUniqueId());
-            if (!(u.is2fa() && !u.mustSetUp2FA())) { //Fully set up, we can cancel 'init' staged 2FA
-                getInstance().getC().send(commandSender, getInstance().getC().message("alreadyDisabled"));
+            if (!(u.is2fa())) {
+                getInstance().getC().send(commandSender, getInstance().getC().message("resetDisabled"));
                 return true;
             }
 
-            if(u.isLocked(sndr)) {
-                getInstance().getC().send(commandSender, getInstance().getC().message("disableForced"));
+            //If the user isn't authenticated, they can't run commands.
+
+            if (u.isLocked(sndr)) {
+                getInstance().getC().send(commandSender, getInstance().getC().message("resetForced"));
                 return true;
             }
 
-            u.disable(sndr);
-            getInstance().getC().send(commandSender, getInstance().getC().message("selfDisabled"));
+            u.invalidateKey();
+            u.init2fa(sndr);
+            getInstance().getC().send(commandSender, getInstance().getC().message("selfReset"));
         } else if (args.length == 1) {
             if (!commandSender.hasPermission("mcauthenticator.reset.other")) {
                 getInstance().getC().sendDirect(commandSender, "&cYou are not permitted to enable other people's 2FA!");
