@@ -2,7 +2,7 @@
 
 MCAuthenticator is a Bukkit API based plugin designed to allow for 2 Factor 
 Authentication (otherwise known as TOTP, or the Time-Based One-Time Password 
-Algorithm) for all players on a server to optionally use, with configurable 
+Algorithm ([RFC6238](https://tools.ietf.org/html/rfc6238))) for all players on a server to optionally use, with configurable 
 enforcement for certain players through permission nodes. This is designed to
 allow for more secure minecraft server environments, especially when account
 cracking and hacking are so prevalent. This plugin reduces the risk of a 
