@@ -2,14 +2,24 @@ package com.aaomidi.mcauthenticator.engine.events;
 
 import com.aaomidi.mcauthenticator.MCAuthenticator;
 import com.aaomidi.mcauthenticator.model.User;
-import com.aaomidi.mcauthenticator.util.StringManager;
+import com.aaomidi.mcauthenticator.model.UserData;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
 
 /**
  * Created by amir on 2016-01-11.
@@ -18,42 +28,34 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class ConnectionEvent implements Listener {
     private final MCAuthenticator instance;
 
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerConnect(PlayerJoinEvent event) {
-        this.instance.handlePlayer(event.getPlayer());
-    }
+    private final Map<UUID, UserData> userDataCache = new HashMap<>();
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        User user = instance.getDataManager().getDataFile().getUser(player.getUniqueId());
-        if (user == null) {
-            return;
+    public void onConnect(AsyncPlayerPreLoginEvent e) {
+        if(e.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) return;
+
+        try {
+            UserData d = instance.getDataSource().getUser(e.getUniqueId());
+            if (d == null) return;
+            userDataCache.put(e.getUniqueId(), d);
+        } catch (IOException | SQLException e1) {
+            instance.getLogger().log(Level.SEVERE, "There was an error loading the data of player "+e.getName(), e1);
         }
-        if (user.getInetAddress() != null && user.getInetAddress().equals(player.getAddress().getAddress())) {
-            StringManager.sendMessage(player, "&bYou were automatically authenticated since your IP has not changed.");
-            user.setAuthenticated(true);
-            return;
+
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerConnect(final PlayerJoinEvent event) {
+        try {
+            instance.handlePlayer(event.getPlayer(), userDataCache.remove(event.getPlayer().getUniqueId()));
+        } catch (IOException | SQLException e) {
+            instance.getLogger().log(Level.SEVERE, "There was an error handling "+event.getPlayer().getName()+" joining", e);
         }
-        if (!user.isProtected()) {
-            if (!user.protectPlayer(player)) {
-                StringManager.sendMessage(player, "&cSevere error occurred when protecting you!");
-            }
-        }
-        StringManager.sendMessage(player, "&dPlease enter your authentication code using Google Authenticator: ");
-        instance.getDataManager().saveFile();
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent e){
-        Player player = e.getPlayer();
-        User user = instance.getDataManager().getDataFile().getUser(player.getUniqueId());
-        if (user == null) {
-            return;
-        }
-
-        if(!user.isAuthenticated() && user.isFirstTime()){
-            user.setSecret(null);
-        }
+    public void onQuit(PlayerQuitEvent e) {
+        User leave = instance.getCache().leave(e.getPlayer().getUniqueId());
+        if (leave != null) leave.logout(e.getPlayer());
     }
 }

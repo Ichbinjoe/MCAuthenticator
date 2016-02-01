@@ -1,45 +1,47 @@
 package com.aaomidi.mcauthenticator;
 
 import com.aaomidi.mcauthenticator.engine.CommandHandler;
-import com.aaomidi.mcauthenticator.engine.DataManager;
-import com.aaomidi.mcauthenticator.engine.events.*;
+import com.aaomidi.mcauthenticator.engine.events.ChatEvent;
+import com.aaomidi.mcauthenticator.engine.events.ConnectionEvent;
+import com.aaomidi.mcauthenticator.engine.events.InventoryEvent;
+import com.aaomidi.mcauthenticator.engine.events.MoveEvent;
 import com.aaomidi.mcauthenticator.model.User;
-import com.aaomidi.mcauthenticator.util.StringManager;
+import com.aaomidi.mcauthenticator.model.UserCache;
+import com.aaomidi.mcauthenticator.model.UserData;
+import com.aaomidi.mcauthenticator.model.UserDataSource;
+import com.aaomidi.mcauthenticator.model.datasource.SingleFileUserDataSource;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
 
 /**
  * Created by amir on 2016-01-11.
  */
 public class MCAuthenticator extends JavaPlugin {
-    @Getter
-    private DataManager dataManager;
+
     @Getter
     private CommandHandler commandHandler;
 
     @Getter
     private Config c;
-
     private File configurationFile;
-
-    @Override
-    public void onLoad() {
-        if (!new File(this.getDataFolder(), "config.yml").exists()) {
-            this.saveDefaultConfig();
-        }
-        dataManager = new DataManager(this);
-        reload();
-        StringManager.setLogger(this.getLogger());
-    }
+    @Getter
+    private UserDataSource dataSource;
+    @Getter
+    private final UserCache cache = new UserCache(this);
 
     @Override
     public void onEnable() {
         commandHandler = new CommandHandler(this);
+        getCommand("auth").setExecutor(commandHandler);
         commandHandler.registerCommands();
 
         registerEvent(new ChatEvent(this));
@@ -55,34 +57,73 @@ public class MCAuthenticator extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(listener, this);
     }
 
-    public void handlePlayer(Player player) {
-
-        //TODO: Allow all players to do 2fa!
-
-        boolean lock = false;
-        /*if (!player.hasPermission(ConfigReader.getStaffPermission())) {
-            return;
+    public void handlePlayer(Player player, UserData data) throws IOException, SQLException {
+        User user = this.getCache().join(player.getUniqueId(), data);
+        if (user.authenticated()) {
+            if (player.hasPermission(c.getForce2faPerm())) {
+                //They have no userData, but they should have 2fa forced.
+                user.init2fa(player);
+            }
+        } else {
+            if (user.mustSetUp2FA()) {
+                user.init2fa(player);
+            } else {
+                if (!user.authenticate(player.getAddress().getAddress())) {
+                    //User must enter code
+                    c.send(player, c.message("authenticationPrompt"));
+                }
+                else {
+                    c.send(player, c.message("ipPreAuthenticated"));
+                }
+            }
         }
-
-        if (player.hasPermission(ConfigReader.getLockPermission())) {
-            lock = true;
-        }*/
-
-        User user = this.getDataManager().getDataFile().getUser(player.getUniqueId());
-        if (user == null) {
-            user = new User(player.getUniqueId());
-            this.getDataManager().getDataFile().addUser(user);
-        }
-        user.setLocked(lock);
-        user.setAuthenticated(false);
     }
 
     public void reload() {
-        if(!configurationFile.exists()){
+        if (!configurationFile.exists()) {
             getDataFolder().mkdirs();
             saveResource(configurationFile.getName(), false);
         }
         YamlConfiguration cfg = YamlConfiguration.loadConfiguration(configurationFile);
-        this.c = new Config(cfg, getLogger());
+        try {
+            this.c = new Config(this, cfg);
+        } catch (SQLException | IOException e) {
+            getLogger().log(Level.SEVERE, "There was an issue configuring the data source!", e);
+            return;
+        }
+
+        cache.invalidate();
+        loadAllPlayers();
+    }
+
+    public void loadAllPlayers() {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            try {
+                handlePlayer(p, getDataSource().getUser(p.getUniqueId()));
+            } catch (Exception e) {
+                getLogger().log(Level.SEVERE,"There was an error loading player "+p.getName(), e);
+            }
+        }
+    }
+
+    public void async(Runnable r) {
+        Bukkit.getScheduler().runTaskAsynchronously(this, r);
+    }
+
+    public void sync(Runnable r) {
+        Bukkit.getScheduler().runTask(this, r);
+    }
+
+    public void save() {
+        async(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    dataSource.save();
+                } catch (Exception e) {
+                    getLogger().log(Level.SEVERE, "There was an error saving the datasource: ",e);
+                }
+            }
+        });
     }
 }

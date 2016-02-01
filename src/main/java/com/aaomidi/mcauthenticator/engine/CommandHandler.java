@@ -2,10 +2,8 @@ package com.aaomidi.mcauthenticator.engine;
 
 import com.aaomidi.mcauthenticator.MCAuthenticator;
 import com.aaomidi.mcauthenticator.engine.commands.ReloadConfigCommand;
-import com.aaomidi.mcauthenticator.engine.commands.ReloadDataCommand;
 import com.aaomidi.mcauthenticator.engine.commands.ResetCommand;
-import com.aaomidi.mcauthenticator.model.AuthCommand;
-import com.aaomidi.mcauthenticator.util.StringManager;
+import com.aaomidi.mcauthenticator.engine.commands.AuthCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,18 +21,15 @@ public class CommandHandler implements CommandExecutor {
 
     public CommandHandler(MCAuthenticator instance) {
         this.instance = instance;
-        instance.getCommand("auth").setExecutor(this);
     }
 
     public void registerCommand(AuthCommand cmd) {
-        //instance.getCommand(cmd.getName().toLowerCase()).setExecutor(this);
         commands.put(cmd.getName().toLowerCase(), cmd);
     }
 
     public void registerCommands() {
-        new ReloadConfigCommand(instance, "reloadconfig", "auth.reloadconfig");
-        new ReloadDataCommand(instance, "reloaddata", "auth.reloaddata");
-        new ResetCommand(instance, "reset", "auth.reset");
+        registerCommand(new ReloadConfigCommand(instance));
+        registerCommand(new ResetCommand(instance));
     }
 
     @Override
@@ -42,25 +37,34 @@ public class CommandHandler implements CommandExecutor {
         if (!cmd.getName().equals("auth")) return false;
 
         if (args.length == 0) {
-            int i = 1;
-            StringBuilder sb = new StringBuilder("&bPossible commands are: ");
-            sb.append(String.format("\n &d%d. &b/auth reloadconfig", i++));
-            sb.append(String.format("\n &d%d. &b/auth reloaddata", i++));
-            sb.append(String.format("\n &d%d. &b/auth reset [player]", i++));
-
-            StringManager.sendMessage(commandSender, sb.toString());
-            return true;
+            return printHelp(commandSender);
         }
 
         AuthCommand c = commands.get(args[0].toLowerCase());
         String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
 
         if (c == null) {
-            StringManager.sendMessage(commandSender, "Unrecognized command");
+            instance.getC().sendDirect(commandSender, "&cUnknown subcommand!");
+            return true;
+        }
+
+        if (c.getPermission() != null && !commandSender.hasPermission(c.getPermission())) {
+            instance.getC().sendDirect(commandSender, "&cYou do not have permission to perform this action!");
             return true;
         }
 
         c.execute(cmd, commandSender, newArgs);
+        return true;
+    }
+
+    private boolean printHelp(CommandSender commandSender) {
+        int i = 1;
+        StringBuilder sb = new StringBuilder("&bPossible commands are: ");
+        for (AuthCommand c : commands.values()) {
+            sb.append(String.format("\n &d%d. &b/auth %s", i++, c.getName()));
+        }
+
+        instance.getC().sendDirect(commandSender, sb.toString());
         return true;
     }
 }

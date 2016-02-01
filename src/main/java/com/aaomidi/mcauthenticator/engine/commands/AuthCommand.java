@@ -1,4 +1,4 @@
-package com.aaomidi.mcauthenticator.model;
+package com.aaomidi.mcauthenticator.engine.commands;
 
 import com.aaomidi.mcauthenticator.MCAuthenticator;
 import lombok.Getter;
@@ -20,8 +20,6 @@ public abstract class AuthCommand {
         this.instance = instance;
         this.name = name;
         this.permission = permission;
-
-        instance.getCommandHandler().registerCommand(this);
     }
 
     public abstract boolean execute(Command command, CommandSender commandSender, String[] args);

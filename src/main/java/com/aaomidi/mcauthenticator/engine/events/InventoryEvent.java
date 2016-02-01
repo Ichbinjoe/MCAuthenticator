@@ -1,7 +1,6 @@
 package com.aaomidi.mcauthenticator.engine.events;
 
 import com.aaomidi.mcauthenticator.MCAuthenticator;
-import com.aaomidi.mcauthenticator.model.User;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -9,7 +8,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 
 /**
  * @author Joseph Hirschfeld
@@ -42,21 +43,26 @@ public class InventoryEvent implements Listener {
     }
 
     @EventHandler
-    public void onDrop(PlayerDropItemEvent e){
-        if(isInQR(e.getPlayer())) e.setCancelled(true);
+    public void onPlayerMoveItemHand(PlayerItemHeldEvent e){
+        if(!auth(e)) e.setCancelled(true);
     }
 
     @EventHandler
-    public void onLeave(PlayerQuitEvent e){
-        User user = instance.getDataManager().getDataFile().getUser(e.getPlayer().getUniqueId());
-        if(user != null && user.isViewingQRCode()){
-            user.stopViewingQRMap(e.getPlayer());
-        }
+    public void onDrop(PlayerDropItemEvent e){
+        if(!auth(e)) e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPickup(PlayerPickupItemEvent e){
+        if(!auth(e)) e.setCancelled(true);
+    }
+
+    private boolean auth(PlayerEvent e) {
+        return instance.getCache().get(e.getPlayer().getUniqueId()).authenticated();
     }
 
     public boolean isInQR(Player p) {
-        User user = instance.getDataManager().getDataFile().getUser(p.getUniqueId());
-        return user != null && user.isViewingQRCode();
+        return instance.getCache().get(p.getUniqueId()).isViewingQRCode();
     }
 
 }
