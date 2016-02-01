@@ -72,7 +72,7 @@ public class ResetCommand extends AuthCommand {
                             return;
                         }
 
-                        if (!u.mustSetUp2FA()) {
+                        if (u.mustSetUp2FA() || !u.authenticated()) {
                             getInstance().getC().sendDirect(commandSender, "&cThe player is already in reset mode.");
                             return;
                         }
@@ -102,7 +102,6 @@ public class ResetCommand extends AuthCommand {
 
                         if (d == null) {
                             getInstance().getC().sendDirect(commandSender, "&4" + player.getName() + " doesn't have 2FA enabled.");
-                            return;
                         } else {
                             if (d.getSecret() == null) {
                                 getInstance().getC().sendDirect(commandSender, "&4" + player.getName() + " is already in reset mode. They will reset their code when they next log in.");
@@ -116,7 +115,6 @@ public class ResetCommand extends AuthCommand {
                                     getInstance().save();
                                 }
                             }
-                            getInstance().getC().sendDirect(commandSender, "&4'" + player.getName() + "'&c already has 2FA enabled!");
                         }
                     }
                 }

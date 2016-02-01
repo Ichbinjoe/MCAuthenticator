@@ -29,7 +29,7 @@ public class DisableCommand extends AuthCommand {
             //Self
             if (!(commandSender instanceof Player)) {
                 getInstance().getC().sendDirect(commandSender, "&cYou must specify a player to enable 2FA on.\n" +
-                        "&c    /auth enable <player>");
+                        "&c    /auth disable <player>");
                 return true;
             }
 
@@ -69,16 +69,17 @@ public class DisableCommand extends AuthCommand {
                             return;
                         }
 
-                        if(u.isLocked(((Player) player)) && !(commandSender instanceof ConsoleCommandSender)) {
+                        if(u.isLocked(((Player) player))) {
+                            getInstance().getC().sendDirect(commandSender, "&cYou cannot disable 2FA on the player's account since they have the locked permission.");
                             return;
                         }
 
                         getInstance().sync(new Runnable() {
                             @Override
                             public void run() {
-                                u.disable(((Player) player));
                                 getInstance().getC().send(((Player) player), getInstance().getC().message("otherDisable").replaceAll("%player%", commandSender.getName()));
                                 getInstance().getC().sendDirect(commandSender, "&7You have disabled 2FA on "+player.getName()+"'s account.");
+                                u.disable(((Player) player));
                             }
                         });
                     } else {
@@ -96,7 +97,7 @@ public class DisableCommand extends AuthCommand {
                         }
 
                         if (d != null) {
-                            if(d.isLocked(((Player) player)) && !(commandSender instanceof ConsoleCommandSender)) {
+                            if(d.isLocked(null) && !(commandSender instanceof ConsoleCommandSender)) {
                                 getInstance().getC().sendDirect(commandSender,"&c This user has the locked permission! You cannot disable 2FA for this person unless you are in console!");
                                 return;
                             }

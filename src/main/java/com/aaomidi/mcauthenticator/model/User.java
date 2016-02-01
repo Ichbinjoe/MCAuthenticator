@@ -226,7 +226,10 @@ public class User {
         if (userData == null) return;
         if (isViewingQRCode) {
             stopViewingQRMap(p);
+        } else { //Lets still try to reverse
+            reverseInventory(p);
         }
+
         mcAuthenticator.getDataSource().destroyUser(userData.getId());
         userData = null;
         mcAuthenticator.save();

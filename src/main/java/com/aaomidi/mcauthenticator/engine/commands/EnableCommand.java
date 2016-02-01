@@ -65,9 +65,9 @@ public class EnableCommand extends AuthCommand {
                         getInstance().sync(new Runnable() {
                             @Override
                             public void run() {
-                                u.init2fa((Player) player);
-                                getInstance().getC().send(commandSender, getInstance().getC().message("otherEnable").replaceAll("%player%", commandSender.getName()));
+                                getInstance().getC().send((CommandSender) player, getInstance().getC().message("otherEnable").replaceAll("%player%", commandSender.getName()));
                                 getInstance().getC().sendDirect(commandSender, "&7You have enabled 2FA on "+player.getName()+"'s account.");
+                                u.init2fa((Player) player);
                             }
                         });
                     } else {
