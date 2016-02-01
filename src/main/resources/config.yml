@@ -13,6 +13,10 @@ serverIp: "cowcraft.net"
 #will display the QR code for them.
 useMapBasedQR: true
 
+#If this option is true, the plugin will not factor into account the last IP of the player, and will force the player to
+#log in each time they are authenticated
+forceSameIPAuthentication: true
+
 dataBacking:
 # This plugin supports 3 independant datastorage mechanisms. At the current time, there is no way to convert between the
 # two, however, this may be added in the future.

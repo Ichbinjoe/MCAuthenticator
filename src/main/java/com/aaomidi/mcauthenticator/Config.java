@@ -29,6 +29,8 @@ public class Config {
     @Getter
     private final UserDataSource dataSource;
 
+    @Getter
+    private boolean enforceSameIPAuth;
 
     private final Map<String, String> messages;
     private String prefix = color("&8[&4Auth&8] ");
@@ -62,6 +64,9 @@ public class Config {
         }
 
         auth.getLogger().info("Using data source: "+dataSource.toString());
+
+        this.enforceSameIPAuth = section.getBoolean("forceSameIPAuthentication");
+
         this.messages = new HashMap<>();
         ConfigurationSection msgCfg = section.getConfigurationSection("messages");
         for (String key : msgCfg.getKeys(false)) {

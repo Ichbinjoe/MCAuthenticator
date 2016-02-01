@@ -62,7 +62,9 @@ public class User {
 
     public boolean authenticate(InetAddress address) {
         if (authenticated()) return true;
-        if (userData.getLastAddress() != null && userData.getLastAddress().equals(address)) authenticated = true;
+        if (!mcAuthenticator.getC().isEnforceSameIPAuth() ||
+                userData.getLastAddress() != null && userData.getLastAddress().equals(address))
+            authenticated = true;
         return authenticated;
     }
 
@@ -221,8 +223,8 @@ public class User {
     }
 
     public void disable(Player p) {
-        if(userData == null) return;
-        if(isViewingQRCode) {
+        if (userData == null) return;
+        if (isViewingQRCode) {
             stopViewingQRMap(p);
         }
         mcAuthenticator.getDataSource().destroyUser(userData.getId());
