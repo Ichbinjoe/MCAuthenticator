@@ -47,7 +47,7 @@ public class CommandHandler implements CommandExecutor {
 
         if (c == null) {
             instance.getC().sendDirect(commandSender, "&cUnknown subcommand!");
-            return true;
+            return printHelp(commandSender, commandLabel);
         }
 
         if (c.getPermission() != null && !commandSender.hasPermission(c.getPermission())) {
