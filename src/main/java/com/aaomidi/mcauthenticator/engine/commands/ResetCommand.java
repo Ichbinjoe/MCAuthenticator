@@ -50,7 +50,7 @@ public class ResetCommand extends AuthCommand {
             u.init2fa(sndr);
             getInstance().getC().send(commandSender, getInstance().getC().message("selfReset"));
         } else if (args.length == 1) {
-            if (!commandSender.hasPermission("mcauthenticator.reset.other")) {
+            if (!commandSender.hasPermission("mcauthenticator.reset.other") && !isConsole(commandSender)) {
                 getInstance().getC().sendDirect(commandSender, "&cYou are not permitted to enable other people's 2FA!");
                 return true;
             }

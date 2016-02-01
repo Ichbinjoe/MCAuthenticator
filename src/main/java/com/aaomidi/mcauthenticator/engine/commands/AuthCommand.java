@@ -4,6 +4,7 @@ import com.aaomidi.mcauthenticator.MCAuthenticator;
 import lombok.Getter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 
 /**
  * Created by amir on 2016-01-11.
@@ -27,4 +28,7 @@ public abstract class AuthCommand {
 
     public abstract boolean execute(Command command, CommandSender commandSender, String[] args);
 
+    public boolean isConsole(CommandSender s) {
+        return s instanceof ConsoleCommandSender;
+    }
 }

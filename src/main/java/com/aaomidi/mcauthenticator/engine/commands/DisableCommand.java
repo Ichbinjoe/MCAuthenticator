@@ -48,7 +48,7 @@ public class DisableCommand extends AuthCommand {
             u.disable(sndr);
             getInstance().getC().send(commandSender, getInstance().getC().message("selfDisabled"));
         } else if (args.length == 1) {
-            if (!commandSender.hasPermission("mcauthenticator.disable.other")) {
+            if (!commandSender.hasPermission("mcauthenticator.disable.other") && !isConsole(commandSender)) {
                 getInstance().getC().sendDirect(commandSender, "&cYou are not permitted to disable other people's 2FA!");
                 return true;
             }

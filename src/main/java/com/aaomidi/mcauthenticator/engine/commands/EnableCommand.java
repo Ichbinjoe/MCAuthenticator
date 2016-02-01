@@ -42,7 +42,7 @@ public class EnableCommand extends AuthCommand {
             //Start the 2fa process.
             u.init2fa(sndr);
         } else if (args.length == 1) {
-            if (!commandSender.hasPermission("mcauthenticator.enable.other")) {
+            if (!commandSender.hasPermission("mcauthenticator.enable.other") && !isConsole(commandSender)) {
                 getInstance().getC().sendDirect(commandSender, "&cYou are not permitted to enable other people's 2FA!");
                 return true;
             }
