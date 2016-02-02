@@ -3,7 +3,7 @@ main: ${project.groupId}.${project.artifactId}
 version: ${project.version}
 authors: ['Joseph Hirschfeld <joe@ibj.io>','aaomidi']
 description: "Provides 2FA ability to minecraft servers"
-website: "https://ibj.io"
+website: "https://ibj.io/2fa"
 
 commands:
   auth:
