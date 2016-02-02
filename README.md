@@ -183,7 +183,7 @@ result of the build will save the jar to `target/MCAuthenticator-<version>.jar`.
 ## Contributing
 
 We love contributions! Feel free to fork this project and  PR any changes/
-enhancements! Of note, we use the MIT License, which is listed (here)[LICENSE.txt].
+enhancements! Of note, we use the MIT License, which is listed [here](https://github.com/Ichbinjoe/MCAuthenticator/blob/master/LICENSE.txt).
 
 ## Reporting Issues/Bugs or Suggesting Additions
 
