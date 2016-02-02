@@ -30,7 +30,6 @@ Desktop.ini
 $RECYCLE.BIN/
 
 ## Linux
-.*
 !.gitattributes
 !.gitignore
 *~
