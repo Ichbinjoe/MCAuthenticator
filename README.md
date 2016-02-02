@@ -111,7 +111,7 @@ The `serverIp` field specifies what will be displayed to the user within their
 For example, with a username `Ichbinjoe` and `serverIp` set to `ibj.io`, a sample
 GAuth entry will look like the following:
 
-![Sample GAuth Entry](docs/example_auth.png "Sample GAuth Entry")
+![Sample GAuth Entry](https://ibj.io/imgs/example_auth.png "Sample GAuth Entry")
 
 ### Map Based QR
 
@@ -124,7 +124,7 @@ both the Map QR and clickable link displayed.
 
 The Map based QR looks like the following:
 
-![Sample QR Map](docs/example_map.png "Sample QR Map")
+![Sample QR Map](https://ibj.io/imgs/example_map.png "Sample QR Map")
 
 ### Forcing Same IP Authentication
 
