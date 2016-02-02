@@ -9,6 +9,18 @@ cracking and hacking are so prevalent. This plugin reduces the risk of a
 compromised staff account greatly, making it much harder to compromise a 
 staff account and compromise a server in general.
 
+## Popular 2FA (TOTP) Apps by Mobile Device Operating System
+
+### Android
+
++ [Authy](https://play.google.com/store/apps/details?id=com.authy.authy&hl=en)
++ [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en)
+
+### iOS
+
++ [Authy](https://itunes.apple.com/us/app/authy/id494168017?mt=8)
++ [Google Authenticator](https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8)
+
 ## Installation
 
 To install MCAuthenticator, you simply put the `MCAuthenticator.jar` within
