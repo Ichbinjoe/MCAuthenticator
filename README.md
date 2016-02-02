@@ -27,6 +27,16 @@ To install MCAuthenticator, you simply put the `MCAuthenticator.jar` within
 the `plugins/` folder of your Bukkit/Spigot server. Once you start the server,
 the plugin will generate a configuration as described below.
 
+### Compatibility
+
+MCAuthenticator is tested with Spigot 1.8.8, on Java 8. However, MCAuthenticator
+is compatible with Java 7, and there is no reason it shouldn't work with Bukkit
+1.6.x or 1.7.x servers. (Maps (which we display the 2FA initialization code on)
+were introduced in 1.6)
+
+If you find issues on any server versions 1.6.x and up, please report them in
+issues.
+
 ## Commands
 
 MCAuthenticator uses 1 root command, /auth (with aliases /2fa, 
