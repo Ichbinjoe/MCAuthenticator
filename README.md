@@ -113,19 +113,6 @@ GAuth entry will look like the following:
 
 ![Sample GAuth Entry](https://ibj.io/imgs/example_auth.png "Sample GAuth Entry")
 
-### Map Based QR
-
-The `useMapBasedQR` field specifies whether the user should be given a map with the
-QR (properly controlled, taken away once used, 0 count, etc...) when setting up 2FA
-or whether to just give the user a link. Currently, the link is not customizable, and
-in all honestly, should not be bothered unless a large portion of your userbase uses
-a text based client. In the future, this configuration option may be deprecated, as
-both the Map QR and clickable link displayed.
-
-The Map based QR looks like the following:
-
-![Sample QR Map](https://ibj.io/imgs/example_map.png "Sample QR Map")
-
 ### Forcing Same IP Authentication
 
 By default, MCAuthenticator does not force a player to re-authenticate if they rejoin

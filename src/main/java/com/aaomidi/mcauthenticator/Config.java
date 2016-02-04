@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 public class Config {
 
     private final String serverIP;
-    private final boolean mapBasedQR;
     @Getter
     private final UserDataSource dataSource;
 
@@ -44,7 +43,6 @@ public class Config {
             tempServerIP = "MCAuthenticator";
         }
         this.serverIP = tempServerIP;
-        this.mapBasedQR = section.getBoolean("useMapBasedQR", true);
         String backing = section.getString("dataBacking.type", "single");
         switch (backing) {
             case "single":

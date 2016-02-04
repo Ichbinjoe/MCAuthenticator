@@ -114,40 +114,37 @@ public class User {
             return false;
         }
         createNewKey();
-        mcAuthenticator.getC().send(p, mcAuthenticator.getC().message("sendAuthCode").replaceAll("%code%", userData.getSecret()));
-        if (mcAuthenticator.getC().isMapBasedQR()) {
-            ImageMapRenderer mapRenderer;
-            try {
-                mapRenderer = new ImageMapRenderer(this, p.getName());
-            } catch (WriterException e) {
-                e.printStackTrace();
-                mcAuthenticator.getC().sendDirect(p, "&cThere was an error rendering your 2FA QR code!");
-                return true;
-            }
-
-            storeInventory(p);
-            isViewingQRCode = true;
-
-            ItemStack itemStack = new ItemStack(Material.MAP);
-            MapView map = Bukkit.createMap(p.getWorld());
-            itemStack.setDurability(map.getId());
-            itemStack.setAmount(0);
-            p.getInventory().setHeldItemSlot(0);
-            p.setItemInHand(itemStack);
-
-            Location playerLocation = p.getLocation();
-            playerLocation.setPitch(90);
-            p.teleport(playerLocation);
-
-            for (MapRenderer r : map.getRenderers()) {
-                map.removeRenderer(r);
-            }
-
-            map.addRenderer(mapRenderer);
-            p.sendMap(map);
-        } else {
-            this.sendFancyQRMessage(p);
+        mcAuthenticator.getC().send(p, mcAuthenticator.getC().message("sendAuthCode").replaceAll("%code%", userData.getSecret())
+                .replaceAll("%url%",createQRURL(p.getName())));
+        ImageMapRenderer mapRenderer;
+        try {
+            mapRenderer = new ImageMapRenderer(this, p.getName());
+        } catch (WriterException e) {
+            e.printStackTrace();
+            mcAuthenticator.getC().sendDirect(p, "&cThere was an error rendering your 2FA QR code!");
+            return true;
         }
+
+        storeInventory(p);
+        isViewingQRCode = true;
+
+        ItemStack itemStack = new ItemStack(Material.MAP);
+        MapView map = Bukkit.createMap(p.getWorld());
+        itemStack.setDurability(map.getId());
+        itemStack.setAmount(0);
+        p.getInventory().setHeldItemSlot(0);
+        p.setItemInHand(itemStack);
+
+        Location playerLocation = p.getLocation();
+        playerLocation.setPitch(90);
+        p.teleport(playerLocation);
+
+        for (MapRenderer r : map.getRenderers()) {
+            map.removeRenderer(r);
+        }
+
+        map.addRenderer(mapRenderer);
+        p.sendMap(map);
         isFirstTime = true;
 
         mcAuthenticator.save();
