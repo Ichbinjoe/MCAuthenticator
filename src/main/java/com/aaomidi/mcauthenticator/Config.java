@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * @date 1/29/16
  */
 @Getter
-public class Config {
+public final class Config {
 
     private final String serverIP;
     @Getter

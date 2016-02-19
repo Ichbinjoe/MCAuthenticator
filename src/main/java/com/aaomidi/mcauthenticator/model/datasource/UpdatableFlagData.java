@@ -8,7 +8,7 @@ import java.util.UUID;
  * @author Joseph Hirschfeld <joe@ibj.io>
  * @date 1/30/16
  */
-public class UpdatableFlagData extends BasicUserData {
+public final class UpdatableFlagData extends BasicUserData {
 
     public UpdatableFlagData(UpdateHook hook, UUID id, InetAddress inetAddress, String secret, boolean locked) {
         super(id, inetAddress, secret, locked);

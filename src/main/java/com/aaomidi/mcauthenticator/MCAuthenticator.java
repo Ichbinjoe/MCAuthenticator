@@ -25,7 +25,7 @@ import java.util.logging.Level;
 /**
  * Created by amir on 2016-01-11.
  */
-public class MCAuthenticator extends JavaPlugin {
+public final class MCAuthenticator extends JavaPlugin {
 
     @Getter
     private CommandHandler commandHandler;

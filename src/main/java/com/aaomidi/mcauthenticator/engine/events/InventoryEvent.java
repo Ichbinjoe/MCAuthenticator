@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
  * @author Joseph Hirschfeld
  * @date 1/11/2016
  */
-public class InventoryEvent implements Listener {
+public final class InventoryEvent implements Listener {
 
     private final MCAuthenticator instance;
 

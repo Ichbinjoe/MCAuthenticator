@@ -20,7 +20,7 @@ import java.util.UUID;
  * @author Joseph Hirschfeld <joe@ibj.io>
  * @date 1/30/16
  */
-public class DirectoryUserDataSource implements UserDataSource {
+public final class DirectoryUserDataSource implements UserDataSource {
 
     private final MCAuthenticator mcAuthenticator;
     private Set<UpdatableFlagData> update = new HashSet<>();

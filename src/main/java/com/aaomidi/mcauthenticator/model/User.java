@@ -26,7 +26,7 @@ import java.sql.SQLException;
  * @author Joseph Hirschfeld <joe@ibj.io>
  * @date 1/29/16
  */
-public class User {
+public final class User {
 
     private static final GoogleAuthenticator gAuth = new GoogleAuthenticator();
     private static final transient String googleFormat = "https://www.google.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=otpauth://totp/%s@%s%%3Fsecret%%3D%s";

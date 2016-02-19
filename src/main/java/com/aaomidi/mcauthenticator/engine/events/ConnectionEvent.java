@@ -25,7 +25,7 @@ import java.util.logging.Level;
  * Created by amir on 2016-01-11.
  */
 @RequiredArgsConstructor
-public class ConnectionEvent implements Listener {
+public final class ConnectionEvent implements Listener {
     private final MCAuthenticator instance;
 
     private final Map<UUID, UserData> userDataCache = new HashMap<>();

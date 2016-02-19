@@ -18,7 +18,7 @@ import java.util.UUID;
  * @author Joseph Hirschfeld <joe@ibj.io>
  * @date 1/29/16
  */
-public class SingleFileUserDataSource implements UserDataSource {
+public final class SingleFileUserDataSource implements UserDataSource {
 
     @Override
     public String toString() {

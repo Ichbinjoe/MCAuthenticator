@@ -17,7 +17,7 @@ import java.sql.SQLException;
 /**
  * Created by amir on 2016-01-11.
  */
-public class ResetCommand extends AuthCommand {
+public final class ResetCommand extends AuthCommand {
     public ResetCommand(MCAuthenticator instance) {
         super(instance, "reset", "mcauthenticator.reset", "Resets a player's 2FA code.");
     }

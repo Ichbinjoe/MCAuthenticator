@@ -12,7 +12,7 @@ import java.util.UUID;
  * @author Joseph Hirschfeld <joe@ibj.io>
  * @date 1/29/16
  */
-public class UserCache {
+public final class UserCache {
 
     private final Map<UUID, User> userMap = new HashMap<>();
     private final MCAuthenticator authenticator;

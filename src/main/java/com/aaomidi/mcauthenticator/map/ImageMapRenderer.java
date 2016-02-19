@@ -15,7 +15,7 @@ import java.awt.*;
  * @author Joseph Hirschfeld
  * @date 1/11/2016
  */
-public class ImageMapRenderer extends MapRenderer {
+public final class ImageMapRenderer extends MapRenderer {
 
     private static final byte black = MapPalette.matchColor(Color.black);
 

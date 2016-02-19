@@ -17,7 +17,7 @@ import java.sql.SQLException;
  * @author Joseph Hirschfeld <joe@ibj.io>
  * @date 2/1/16
  */
-public class EnableCommand extends AuthCommand {
+public final class EnableCommand extends AuthCommand {
     public EnableCommand(MCAuthenticator instance) {
         super(instance, "enable", "mcauthenticator.enable", "Enables 2FA on an account");
     }

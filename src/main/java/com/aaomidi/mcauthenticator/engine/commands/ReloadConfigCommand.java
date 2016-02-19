@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 /**
  * Created by amir on 2016-01-11.
  */
-public class ReloadConfigCommand extends AuthCommand {
+public final class ReloadConfigCommand extends AuthCommand {
     public ReloadConfigCommand(MCAuthenticator instance) {
         super(instance, "reload", "mcauthenticator.reload", "Reloads the configuration and data, and reauthenticates everyone if needed.");
     }

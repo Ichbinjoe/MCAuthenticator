@@ -14,7 +14,7 @@ import java.util.TreeMap;
 /**
  * Created by amir on 2016-01-11.
  */
-public class CommandHandler implements CommandExecutor {
+public final class CommandHandler implements CommandExecutor {
     private final MCAuthenticator instance;
     private final Map<String, AuthCommand> commands = new TreeMap<>();
 

@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
  * Created by amir on 2016-01-11.
  */
 @RequiredArgsConstructor
-public class MoveEvent implements Listener {
+public final class MoveEvent implements Listener {
     private final MCAuthenticator instance;
 
     @EventHandler(priority = EventPriority.LOWEST)

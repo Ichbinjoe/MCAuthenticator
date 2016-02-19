@@ -22,7 +22,7 @@ import java.util.UUID;
  * @date 1/30/16
  */
 
-public class MySQLUserDataSource implements UserDataSource {
+public final class MySQLUserDataSource implements UserDataSource {
 
     public MySQLUserDataSource(String connectionURL, String username, String password, MCAuthenticator mcAuthenticator1) throws SQLException {
         this.mcAuthenticator = mcAuthenticator1;

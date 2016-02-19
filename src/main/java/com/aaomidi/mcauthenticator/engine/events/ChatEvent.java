@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
  * Created by amir on 2016-01-11.
  */
 @RequiredArgsConstructor
-public class ChatEvent implements Listener {
+public final class ChatEvent implements Listener {
     private final MCAuthenticator instance;
 
     @EventHandler(priority = EventPriority.LOWEST)
