@@ -24,8 +24,7 @@ import java.util.UUID;
 
 public final class MySQLUserDataSource implements UserDataSource {
 
-    public MySQLUserDataSource(String connectionURL, String username, String password, MCAuthenticator mcAuthenticator1) throws SQLException {
-        this.mcAuthenticator = mcAuthenticator1;
+    public MySQLUserDataSource(String connectionURL, String username, String password) throws SQLException {
         this.updateHook = new UpdateHook() {
             @Override
             public void update(UpdatableFlagData me) {
@@ -62,7 +61,6 @@ public final class MySQLUserDataSource implements UserDataSource {
         }
     }
 
-    private final MCAuthenticator mcAuthenticator;
     private final HikariDataSource pool;
     private final UpdateHook updateHook;
 

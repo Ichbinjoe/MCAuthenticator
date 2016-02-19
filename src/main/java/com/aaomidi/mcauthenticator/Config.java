@@ -7,7 +7,6 @@ import com.aaomidi.mcauthenticator.model.datasource.SingleFileUserDataSource;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * @author Joseph Hirschfeld <joe@ibj.io>
@@ -55,7 +53,7 @@ public final class Config {
                 ConfigurationSection mysql = section.getConfigurationSection("dataBacking.mysql");
                 this.dataSource = new MySQLUserDataSource(mysql.getString("url","jdbc:mysql://localhost:3306/db"),
                         mysql.getString("username"),
-                        mysql.getString("password"), auth);
+                        mysql.getString("password"));
                 break;
             default:
                 throw new IllegalArgumentException("The dataBacking type '"+backing+"' doesn't exist.");
