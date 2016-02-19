@@ -160,7 +160,7 @@ To enable the MySQL data source, `dataBacking.type` should be set to `mysql`.
 The database connection details should then be set in `dataBacking.mysql`.
 The default connection url is `jdbc:mysql://localhost:3000/db`, with the format
 `jdbc:mysql://<ip>:<port>/<databaseName>`. `username` and `password` should also
-be set to the a username and password that is able to access the database.
+be set to a username and password that is able to access the database.
 
 ## Building MCAuthenticator
 
