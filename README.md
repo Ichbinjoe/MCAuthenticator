@@ -29,6 +29,8 @@ the plugin will generate a configuration as described below.
 
 ### Compatibility
 
+[![Build Status](https://travis-ci.org/Ichbinjoe/MCAuthenticator.svg?branch=master)](https://travis-ci.org/Ichbinjoe/MCAuthenticator)
+
 MCAuthenticator is tested with Spigot 1.8.8, on Java 8. However, MCAuthenticator
 is compatible with Java 7, and there is no reason it shouldn't work with Bukkit
 1.6.x or 1.7.x servers. We will officially support 1.6.x spigot and up.
