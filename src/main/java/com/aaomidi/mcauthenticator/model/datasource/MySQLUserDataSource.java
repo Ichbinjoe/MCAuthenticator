@@ -69,7 +69,7 @@ public final class MySQLUserDataSource implements UserDataSource {
 
     @Override
     public UserData getUser(UUID id) throws IOException, SQLException {
-        if (Bukkit.isPrimaryThread()) throw new RuntimeException("Primary thread I/O");
+        if (Bukkit.isPrimaryThread() && !MCAuthenticator.isReload) throw new RuntimeException("Primary thread I/O");
         try (Connection c = pool.getConnection()) {
             PreparedStatement p = c.prepareStatement("SELECT uuid, ip, secret, locked FROM 2FA WHERE uuid = ?;");
             p.setString(1, id.toString().replaceAll("-", ""));

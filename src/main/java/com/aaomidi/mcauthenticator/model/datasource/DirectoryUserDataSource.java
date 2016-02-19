@@ -50,7 +50,7 @@ public final class DirectoryUserDataSource implements UserDataSource {
 
     @Override
     public UserData getUser(UUID id) throws IOException {
-        if (Bukkit.isPrimaryThread()) throw new RuntimeException("Primary thread I/O");
+        if (Bukkit.isPrimaryThread() && !MCAuthenticator.isReload) throw new RuntimeException("Primary thread I/O");
         File f = getUserFile(id);
         if (!f.exists()) return null;
 

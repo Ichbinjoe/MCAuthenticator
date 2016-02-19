@@ -42,6 +42,8 @@ public final class MCAuthenticator extends JavaPlugin {
     @Getter
     private final UserCache cache = new UserCache(this);
 
+    public static boolean isReload = false;
+
     @Override
     public void onEnable() {
         commandHandler = new CommandHandler(this);
@@ -84,6 +86,7 @@ public final class MCAuthenticator extends JavaPlugin {
     }
 
     public void reload() {
+        isReload = true;
         if (!configurationFile.exists()) {
             getDataFolder().mkdirs();
             saveResource(configurationFile.getName(), false);
@@ -98,6 +101,7 @@ public final class MCAuthenticator extends JavaPlugin {
 
         cache.invalidate();
         loadAllPlayers();
+        isReload = false;
     }
 
     public void loadAllPlayers() {
