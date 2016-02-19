@@ -44,10 +44,10 @@ public final class Config {
         String backing = section.getString("dataBacking.type", "single");
         switch (backing) {
             case "single":
-                this.dataSource = new SingleFileUserDataSource(new File(auth.getDataFolder(), section.getString("dataBacking.file", "playerData.json")), auth);
+                this.dataSource = new SingleFileUserDataSource(new File(auth.getDataFolder(), section.getString("dataBacking.file", "playerData.json")));
                 break;
             case "directory":
-                this.dataSource = new DirectoryUserDataSource(new File(auth.getDataFolder(), section.getString("dataBacking.directory", "playerData")), auth);
+                this.dataSource = new DirectoryUserDataSource(new File(auth.getDataFolder(), section.getString("dataBacking.directory", "playerData")));
                 break;
             case "mysql":
                 ConfigurationSection mysql = section.getConfigurationSection("dataBacking.mysql");

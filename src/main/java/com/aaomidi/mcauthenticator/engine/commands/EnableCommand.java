@@ -80,7 +80,7 @@ public final class EnableCommand extends AuthCommand {
                             d = getInstance().getDataSource().getUser(player.getUniqueId());
                         } catch (IOException | SQLException e) {
                             commandSender.sendMessage(ChatColor.RED + "There was an issue retrieving the userdata. Check console.");
-                            e.printStackTrace();
+                            getInstance().handleException(e);
                             return;
                         }
 

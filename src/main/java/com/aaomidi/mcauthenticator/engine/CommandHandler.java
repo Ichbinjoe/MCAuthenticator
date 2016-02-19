@@ -56,7 +56,12 @@ public final class CommandHandler implements CommandExecutor {
             return true;
         }
 
-        c.execute(cmd, commandSender, newArgs);
+        try {
+            c.execute(cmd, commandSender, newArgs);
+        } catch (RuntimeException e) {
+            instance.handleException(e);
+        }
+
         return true;
     }
 

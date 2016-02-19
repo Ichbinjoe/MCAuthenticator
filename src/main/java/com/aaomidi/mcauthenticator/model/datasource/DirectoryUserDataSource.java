@@ -22,7 +22,6 @@ import java.util.UUID;
  */
 public final class DirectoryUserDataSource implements UserDataSource {
 
-    private final MCAuthenticator mcAuthenticator;
     private Set<UpdatableFlagData> update = new HashSet<>();
     private Set<UUID> delete = new HashSet<>();
     private final UpdateHook updateHook;
@@ -34,8 +33,7 @@ public final class DirectoryUserDataSource implements UserDataSource {
         return "(DirectoryDataSource: "+parentDirectory.getPath()+")";
     }
 
-    public DirectoryUserDataSource(File parentDirectory, MCAuthenticator mcAuthenticator) throws IOException {
-        this.mcAuthenticator = mcAuthenticator;
+    public DirectoryUserDataSource(File parentDirectory) throws IOException {
         this.parentDirectory = parentDirectory;
         if (!parentDirectory.isDirectory()) {
             if (!parentDirectory.mkdirs()) {

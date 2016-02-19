@@ -18,9 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import java.io.IOException;
 import java.net.InetAddress;
-import java.sql.SQLException;
 
 /**
  * @author Joseph Hirschfeld <joe@ibj.io>
@@ -120,8 +118,8 @@ public final class User {
         try {
             mapRenderer = new ImageMapRenderer(this, p.getName());
         } catch (WriterException e) {
-            e.printStackTrace();
             mcAuthenticator.getC().sendDirect(p, "&cThere was an error rendering your 2FA QR code!");
+            mcAuthenticator.handleException(e);
             return true;
         }
 

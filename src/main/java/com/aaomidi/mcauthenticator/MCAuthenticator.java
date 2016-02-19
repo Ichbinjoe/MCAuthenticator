@@ -9,7 +9,6 @@ import com.aaomidi.mcauthenticator.model.User;
 import com.aaomidi.mcauthenticator.model.UserCache;
 import com.aaomidi.mcauthenticator.model.UserData;
 import com.aaomidi.mcauthenticator.model.UserDataSource;
-import com.aaomidi.mcauthenticator.model.datasource.SingleFileUserDataSource;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,7 +18,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.util.logging.Level;
 
 /**
@@ -91,7 +92,7 @@ public final class MCAuthenticator extends JavaPlugin {
         try {
             this.c = new Config(this, cfg);
         } catch (SQLException | IOException e) {
-            getLogger().log(Level.SEVERE, "There was an issue configuring the data source!", e);
+            handleException(e);
             return;
         }
 
@@ -104,7 +105,7 @@ public final class MCAuthenticator extends JavaPlugin {
             try {
                 handlePlayer(p, getDataSource().getUser(p.getUniqueId()));
             } catch (Exception e) {
-                getLogger().log(Level.SEVERE, "There was an error loading player " + p.getName(), e);
+                handleException(e);
             }
         }
     }
@@ -124,9 +125,36 @@ public final class MCAuthenticator extends JavaPlugin {
                 try {
                     getDataSource().save();
                 } catch (Exception e) {
-                    getLogger().log(Level.SEVERE, "There was an error saving the datasource: ", e);
+                    handleException(e);
                 }
             }
         });
+    }
+
+    public void handleException(Exception e) {
+        if (e instanceof SQLTimeoutException) {
+            getLogger().log(Level.SEVERE, "The backing datasource has had an SQL timeout: this is not a plugin issue." +
+                    " Please ensure that your plugin has the correct SQL server address configured, and that the server" +
+                    " is running and is capable of receiving connections from your server.", e);
+        } else if (e instanceof SQLException) {
+            if (e.getMessage().startsWith("Access denied")) {
+                getLogger().log(Level.SEVERE, "It appears that the datasource has denied your SQL credentials: this is not a plugin issue." +
+                        " Please ensure that your username and password for the server are configured correctly, and that the configured" +
+                        " account has access to the database you have configured MCAuthenticator to use.", e);
+            } else {
+                getLogger().log(Level.SEVERE, "MCAuthenticator has encountered a general SQL error. Please review the error" +
+                        " before submitting it as a bug.", e);
+            }
+        } else if (e instanceof ConnectException) {
+            getLogger().log(Level.SEVERE, "The backing datasource refused to allow MCAuthenticator to connect to it:" +
+                    " this is not a plugin issue. Please ensure that MCAuthenticator is configured to use the correct" +
+                    " address, that the SQL server is running, and is capable of recieving connections from your server.", e);
+        } else if (e instanceof IOException) {
+            getLogger().log(Level.SEVERE, "An I/O exception has occurred. This can be caused by many things, and should be" +
+                    " reviewed before submitting it as a bug.", e);
+        } else {
+            getLogger().log(Level.SEVERE, "An exception occurred. At the time, we do not have any context to why this error is" +
+                    " occurring.", e);
+        }
     }
 }

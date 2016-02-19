@@ -39,7 +39,7 @@ public final class ConnectionEvent implements Listener {
             if (d == null) return;
             userDataCache.put(e.getUniqueId(), d);
         } catch (IOException | SQLException e1) {
-            instance.getLogger().log(Level.SEVERE, "There was an error loading the data of player "+e.getName(), e1);
+            instance.handleException(e1);
         }
 
     }
@@ -49,7 +49,7 @@ public final class ConnectionEvent implements Listener {
         try {
             instance.handlePlayer(event.getPlayer(), userDataCache.remove(event.getPlayer().getUniqueId()));
         } catch (IOException | SQLException e) {
-            instance.getLogger().log(Level.SEVERE, "There was an error handling "+event.getPlayer().getName()+" joining", e);
+            instance.handleException(e);
         }
     }
 

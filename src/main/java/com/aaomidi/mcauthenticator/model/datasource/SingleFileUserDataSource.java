@@ -25,8 +25,7 @@ public final class SingleFileUserDataSource implements UserDataSource {
         return "(SingleFileDataSource: "+ dataFile.getPath()+")";
     }
 
-    public SingleFileUserDataSource(File f, MCAuthenticator auth) throws IOException {
-        this.auth = auth;
+    public SingleFileUserDataSource(File f) throws IOException {
         if (!f.exists()) {
             if (!f.createNewFile()) {
                 throw new IOException("There was an issue creating the player data file "+f.getPath());
@@ -40,7 +39,6 @@ public final class SingleFileUserDataSource implements UserDataSource {
 
     private Map<UUID, BasicUserData> data = new HashMap<>();
     private final File dataFile;
-    private final MCAuthenticator auth;
 
     @Override
     public UserData getUser(UUID id) {
