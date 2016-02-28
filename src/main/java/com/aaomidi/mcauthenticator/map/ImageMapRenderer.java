@@ -1,8 +1,9 @@
 package com.aaomidi.mcauthenticator.map;
 
-import com.aaomidi.mcauthenticator.model.User;
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -18,9 +19,10 @@ import java.awt.*;
 public final class ImageMapRenderer extends MapRenderer {
 
     private static final byte black = MapPalette.matchColor(Color.black);
+    private static final String encodeFormat = "otpauth://totp/%s@%s?secret=%s";
 
-    public ImageMapRenderer(User user, String username) throws WriterException {
-        this.bitMatrix = user.createQRBitmatrix(username);
+    public ImageMapRenderer(String username, String secret, String serverip) throws WriterException {
+        this.bitMatrix = getQRMap(username, secret, serverip);
     }
 
     private final BitMatrix bitMatrix;
@@ -32,5 +34,13 @@ public final class ImageMapRenderer extends MapRenderer {
                 mapCanvas.setPixel(x, z, bitMatrix.get(x, z) ? black : MapPalette.WHITE);
             }
         }
+    }
+
+    private BitMatrix getQRMap(String username, String secret, String serverIp) throws WriterException {
+        return new QRCodeWriter().encode(String.format(encodeFormat,
+                username,
+                serverIp,
+                secret),
+                BarcodeFormat.QR_CODE, 128, 128);
     }
 }

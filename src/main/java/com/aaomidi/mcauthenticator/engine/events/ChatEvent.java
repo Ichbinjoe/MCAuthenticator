@@ -10,6 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import java.util.Iterator;
+
 /**
  * Created by amir on 2016-01-11.
  */
@@ -23,10 +25,20 @@ public final class ChatEvent implements Listener {
         User user = instance.getCache().get(player.getUniqueId());
 
         if (user.authenticated()) {
+            Iterator<Player> recipients = event.getRecipients().iterator();
+            while(recipients.hasNext()) {
+                User u = instance.getCache().get(recipients.next().getUniqueId());
+                if(!u.authenticated()) recipients.remove();
+            }
             return;
         }
 
-        boolean authenticate = user.authenticate(event.getMessage(), player);
+        boolean authenticate = false;
+        try {
+            authenticate = user.authenticate(event.getMessage(), player);
+        } catch (Exception e) {
+            instance.getC().sendDirect(player, "&cThere was a fatal exception when trying to authenticate you!");
+        }
 
         if(authenticate){
             instance.getC().send(player, instance.getC().message("authenticated"));

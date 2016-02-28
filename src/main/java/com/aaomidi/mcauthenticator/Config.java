@@ -1,5 +1,8 @@
 package com.aaomidi.mcauthenticator;
 
+import com.aaomidi.mcauthenticator.auth.Authenticator;
+import com.aaomidi.mcauthenticator.auth.RFC6238;
+import com.aaomidi.mcauthenticator.auth.Yubikey;
 import com.aaomidi.mcauthenticator.model.UserDataSource;
 import com.aaomidi.mcauthenticator.model.datasource.DirectoryUserDataSource;
 import com.aaomidi.mcauthenticator.model.datasource.MySQLUserDataSource;
@@ -27,20 +30,46 @@ public final class Config {
     private final UserDataSource dataSource;
 
     @Getter
+    private final Authenticator internalAuthenticator;
+
+    @Getter
     private boolean enforceSameIPAuth;
 
     private final Map<String, String> messages;
     private String prefix = color("&8[&4Auth&8] ");
 
     public Config(MCAuthenticator auth, ConfigurationSection section) throws SQLException, IOException {
-        String tempServerIP;
-        tempServerIP = section.getString("serverIp");
-        if (tempServerIP == null) {
-            auth.getLogger().info("Your serverIp within your MCAuthenticator configuration is not set! It defaults " +
-                    "'MCAuthenticator', but you should consider changing it to your server name!");
-            tempServerIP = "MCAuthenticator";
+        String authenticator = section.getString("authenticator", "2fa");
+        if (authenticator.equalsIgnoreCase("2fa")) {
+            internalAuthenticator = new RFC6238(auth);
+            auth.getLogger().info("Using RFC6238 (Google Authenticator 2FA) based authentication.");
+        } else if (authenticator.equalsIgnoreCase("yubikey")) {
+            Integer clientId = section.getInt("yubikey.clientId");
+            String clientSecret = section.getString("yubikey.clientSecret");
+            if (clientSecret == null) {
+                auth.getLogger().info("The Yubikey configuration section does not appear to be set up correctly! Both clientId" +
+                        " and clientSecret must be filled in correctly! Otherwise, the authenticator may not function correctly.");
+                auth.getLogger().info("If you do not know these, they can be retrieved from here: https://upgrade.yubico.com/getapikey/");
+            }
+            internalAuthenticator = new Yubikey(clientId, clientSecret);
+            auth.getLogger().info("Using Yubikey based authenticator.");
+        } else {
+            auth.getLogger().info("You did not specify a proper authenticator! (2fa/yubikey). Please fix this, however," +
+                    " we are falling back to 2fa.");
+            internalAuthenticator = new RFC6238(auth);
         }
-        this.serverIP = tempServerIP;
+        if (internalAuthenticator instanceof RFC6238) {
+            String tempServerIP;
+            tempServerIP = section.getString("serverIp");
+            if (tempServerIP == null) {
+                auth.getLogger().info("Your serverIp within your MCAuthenticator configuration is not set! It defaults " +
+                        "'MCAuthenticator', but you should consider changing it to your server name!");
+                tempServerIP = "MCAuthenticator";
+            }
+            this.serverIP = tempServerIP;
+        } else {
+            this.serverIP = null; //Its not needed for other modes.
+        }
         String backing = section.getString("dataBacking.type", "single");
         switch (backing) {
             case "single":
@@ -51,15 +80,15 @@ public final class Config {
                 break;
             case "mysql":
                 ConfigurationSection mysql = section.getConfigurationSection("dataBacking.mysql");
-                this.dataSource = new MySQLUserDataSource(mysql.getString("url","jdbc:mysql://localhost:3306/db"),
+                this.dataSource = new MySQLUserDataSource(mysql.getString("url", "jdbc:mysql://localhost:3306/db"),
                         mysql.getString("username"),
                         mysql.getString("password"));
                 break;
             default:
-                throw new IllegalArgumentException("The dataBacking type '"+backing+"' doesn't exist.");
+                throw new IllegalArgumentException("The dataBacking type '" + backing + "' doesn't exist.");
         }
 
-        auth.getLogger().info("Using data source: "+dataSource.toString());
+        auth.getLogger().info("Using data source: " + dataSource.toString());
 
         this.enforceSameIPAuth = section.getBoolean("forceSameIPAuthentication", false);
 

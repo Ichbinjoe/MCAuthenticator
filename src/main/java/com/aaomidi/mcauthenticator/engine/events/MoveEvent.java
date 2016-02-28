@@ -38,12 +38,6 @@ public final class MoveEvent implements Listener {
 
         if (u.authenticated()) return;
 
-        if (u.isFirstTime()) {
-            if(!u.isViewingQRCode()) {
-                u.sendFancyQRMessage(player);
-            }
-        }
-
         event.setTo(from);
     }
 }

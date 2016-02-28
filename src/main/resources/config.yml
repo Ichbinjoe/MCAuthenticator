@@ -3,6 +3,19 @@
 #or some other identifier.
 serverIp: "mc.myserver.com"
 
+#The plugin now supports 2 types of 2fa: standard (Google Authenticator) based 2fa,
+#as well as the Yubikey.
+
+#'2fa'- "Google Authenticator" type 2fa
+#'yubikey' - Yubikey based authentication
+authenticator: 2fa
+#authenticator: yubikey
+
+#Yubikey configuration: Only needs to be filled in if
+yubikey:
+  clientId: -1 #Your client id
+  clientSecret: secret #Your client secret
+
 #Sets whether or not to use the in game map based QR display.
 #If this is set to true, when the user is setting up their 2FA,
 #the plugin will give the user a map, and force them to then scan
@@ -61,3 +74,6 @@ messages:
   resetNotAuthed: "&cYou cannot reset your account until you authenticate!"
   resetForced: "&cYou are not permitted to reset 2FA on your account!"
   selfReset: "&cYou have reset 2FA on your account. Please enter the code shown on your device from the new code."
+
+  #New since 1.1
+  yubikeyInitial: "&7Set up your Yubikey by entering an initial code:"

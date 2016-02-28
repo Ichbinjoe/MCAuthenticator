@@ -1,5 +1,6 @@
 package com.aaomidi.mcauthenticator;
 
+import com.aaomidi.mcauthenticator.auth.Authenticator;
 import com.aaomidi.mcauthenticator.engine.CommandHandler;
 import com.aaomidi.mcauthenticator.engine.events.ChatEvent;
 import com.aaomidi.mcauthenticator.engine.events.ConnectionEvent;
@@ -48,6 +49,9 @@ public final class MCAuthenticator extends JavaPlugin {
 
     @Getter
     private final UserCache cache = new UserCache(this);
+
+    @Getter
+    private Authenticator auth;
 
     public static boolean isReload = false;
 
