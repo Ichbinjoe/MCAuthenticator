@@ -152,7 +152,7 @@ public final class MCAuthenticator extends JavaPlugin {
         } else if (e instanceof ConnectException) {
             getLogger().log(Level.SEVERE, "The backing datasource refused to allow MCAuthenticator to connect to it:" +
                     " this is not a plugin issue. Please ensure that MCAuthenticator is configured to use the correct" +
-                    " address, that the SQL server is running, and is capable of recieving connections from your server.", e);
+                    " address, that the SQL server is running, and is capable of receiving connections from your server.", e);
         } else if (e instanceof IOException) {
             getLogger().log(Level.SEVERE, "An I/O exception has occurred. This can be caused by many things, and should be" +
                     " reviewed before submitting it as a bug.", e);
