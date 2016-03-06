@@ -19,6 +19,7 @@ public class BasicUserData implements UserData {
     private final UUID id;
     private InetAddress inetAddress;
     private String secret;
+    private int authtype;
     private boolean locked;
 
     @Override
@@ -42,8 +43,14 @@ public class BasicUserData implements UserData {
     }
 
     @Override
-    public void setSecret(String secret) {
+    public int getAuthType() {
+        return authtype;
+    }
+
+    @Override
+    public void setSecret(String secret, int authtype) {
         this.secret = secret;
+        this.authtype = authtype;
     }
 
     @Override

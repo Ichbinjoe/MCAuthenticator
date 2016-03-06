@@ -45,7 +45,10 @@ public final class DisableCommand extends AuthCommand {
                 return true;
             }
 
-            u.disable(sndr);
+            u.invalidateKey();
+            u.reverseInventory(sndr);
+            getInstance().save();
+
             getInstance().getC().send(commandSender, getInstance().getC().message("selfDisabled"));
         } else if (args.length == 1) {
             if (!commandSender.hasPermission("mcauthenticator.disable.other") && !isConsole(commandSender)) {
@@ -79,7 +82,9 @@ public final class DisableCommand extends AuthCommand {
                             public void run() {
                                 getInstance().getC().send(((Player) player), getInstance().getC().message("otherDisable").replaceAll("%player%", commandSender.getName()));
                                 getInstance().getC().sendDirect(commandSender, "&7You have disabled 2FA on "+player.getName()+"'s account.");
-                                u.disable(((Player) player));
+                                u.invalidateKey();
+                                u.reverseInventory((Player) player);
+                                getInstance().save();
                             }
                         });
                     } else {

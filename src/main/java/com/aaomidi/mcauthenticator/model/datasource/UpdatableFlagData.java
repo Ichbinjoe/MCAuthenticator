@@ -10,8 +10,8 @@ import java.util.UUID;
  */
 public final class UpdatableFlagData extends BasicUserData {
 
-    public UpdatableFlagData(UpdateHook hook, UUID id, InetAddress inetAddress, String secret, boolean locked) {
-        super(id, inetAddress, secret, locked);
+    public UpdatableFlagData(UpdateHook hook, UUID id, InetAddress inetAddress, String secret, int authtype, boolean locked) {
+        super(id, inetAddress, secret, authtype, locked);
         this.hook = hook;
     }
 
@@ -25,9 +25,9 @@ public final class UpdatableFlagData extends BasicUserData {
     }
 
     @Override
-    public void setSecret(String secret) {
+    public void setSecret(String secret, int authtype) {
         String a = getSecret();
-        super.setSecret(secret);
+        super.setSecret(secret, authtype);
         if(!Objects.equals(a, secret)) hook.update(this);
     }
 

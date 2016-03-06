@@ -1,6 +1,5 @@
 package com.aaomidi.mcauthenticator.model.datasource;
 
-import com.aaomidi.mcauthenticator.MCAuthenticator;
 import com.aaomidi.mcauthenticator.model.UserData;
 import com.aaomidi.mcauthenticator.model.UserDataSource;
 import com.google.gson.*;
@@ -47,7 +46,7 @@ public final class SingleFileUserDataSource implements UserDataSource {
 
     @Override
     public UserData createUser(UUID id) {
-        BasicUserData d = new BasicUserData(id, null, null, false);
+        BasicUserData d = new BasicUserData(id, null, null, -1, false);
         data.put(id, d);
         return d;
     }
@@ -67,6 +66,7 @@ public final class SingleFileUserDataSource implements UserDataSource {
             element.addProperty("ip", iAdd != null ? iAdd.getHostAddress() : null);
             element.addProperty("secret", d.getSecret());
             element.addProperty("locked", d.isLocked(null));
+            element.addProperty("authtype", d.getAuthType());
             a.add(element);
         }
 
@@ -88,10 +88,12 @@ public final class SingleFileUserDataSource implements UserDataSource {
                 JsonElement ip1 = obj.get("ip");
                 String ip = ip1 != null ? ip1.getAsString() : null;
                 JsonElement secret = obj.get("secret");
+                JsonElement authtype = obj.get("authtype");
                 BasicUserData adata = new BasicUserData(
                         UUID.fromString(obj.get("uuid").getAsString()),
                         ip != null ? InetAddress.getByName(ip) : null,
                         secret != null ? secret.getAsString() : null,
+                        authtype != null ? authtype.getAsInt() : 0,
                         obj.get("locked").getAsBoolean());
                 basicUserData.put(adata.getId(), adata);
             }

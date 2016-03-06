@@ -25,11 +25,6 @@ public final class MoveEvent implements Listener {
         Player player = event.getPlayer();
         User u = instance.getCache().get(player.getUniqueId());
 
-        if(u.isViewingQRCode()) {
-            event.setTo(from);
-            return;
-        }
-
         if (from.getBlockX() == to.getBlockX()
                 && from.getBlockY() == to.getBlockY()
                 && from.getBlockZ() == to.getBlockZ()) {

@@ -14,7 +14,8 @@ public interface UserData {
     InetAddress getLastAddress();
     void setLastAddress(InetAddress inetAddress);
     String getSecret();
-    void setSecret(String secret);
+    int getAuthType();
+    void setSecret(String secret, int authtype);
     boolean isLocked(Player player);
     void setLocked(boolean lock);
 }

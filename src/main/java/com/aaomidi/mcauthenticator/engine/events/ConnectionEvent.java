@@ -1,6 +1,7 @@
 package com.aaomidi.mcauthenticator.engine.events;
 
 import com.aaomidi.mcauthenticator.MCAuthenticator;
+import com.aaomidi.mcauthenticator.auth.Authenticator;
 import com.aaomidi.mcauthenticator.model.User;
 import com.aaomidi.mcauthenticator.model.UserData;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,8 @@ public final class ConnectionEvent implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onConnect(AsyncPlayerPreLoginEvent e) {
-        if(e.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) return;
+        if (e.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED)
+            return;
 
         try {
             UserData d = instance.getDataSource().getUser(e.getUniqueId());
@@ -56,6 +58,10 @@ public final class ConnectionEvent implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         User leave = instance.getCache().leave(e.getPlayer().getUniqueId());
-        if (leave != null) leave.logout(e.getPlayer());
+        if (leave != null) {
+            for (Authenticator a : instance.getAuthenticators()) {
+                a.quitUser(leave, e.getPlayer());
+            }
+        }
     }
 }

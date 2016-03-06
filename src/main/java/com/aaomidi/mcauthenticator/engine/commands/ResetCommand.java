@@ -109,7 +109,7 @@ public final class ResetCommand extends AuthCommand {
                                 if (d.isLocked(null) && !(commandSender instanceof ConsoleCommandSender)) {
                                     getInstance().getC().sendDirect(commandSender, "&c This user has the locked permission! You cannot reset 2FA for this person unless you are in console!");
                                 } else {
-                                    d.setSecret(null);
+                                    d.setSecret(null, -1);
                                     d.setLastAddress(null);
                                     getInstance().getC().sendDirect(commandSender, "&7You have reset this player's 2FA. They will reset their code when they next log in.");
                                     getInstance().save();

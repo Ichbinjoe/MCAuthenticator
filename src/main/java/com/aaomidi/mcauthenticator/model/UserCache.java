@@ -26,7 +26,7 @@ public final class UserCache {
     }
 
     public User join(UUID id, UserData data) throws IOException, SQLException {
-        User user = new User(data, authenticator);
+        User user = new User(id, data, authenticator);
         userMap.put(id, user);
         return user;
     }

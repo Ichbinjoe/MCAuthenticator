@@ -50,14 +50,37 @@ public final class MySQLUserDataSource implements UserDataSource {
             }
             resultSet.close();
 
-            if (found) return;
+            if (found) {
+                try (ResultSet rs = c.createStatement().executeQuery("SHOW COLUMNS FROM 2FA;")) {
+                    // Determine secret field (1.0.2 and before) and add type row
+                    boolean hasAuthType = false;
+                    while (rs.next()) {
+                        String field = rs.getString("Field");
+                        if (!field.equalsIgnoreCase("secret")) {
+                            if (field.equalsIgnoreCase("authtype"))
+                                hasAuthType = true;
+                            continue;
+                        }
 
-            c.createStatement().execute("CREATE TABLE 2FA(" +
-                    "uuid CHAR(32) PRIMARY KEY," +
-                    "ip VARCHAR(255)," +
-                    "secret CHAR(16)," +
-                    "locked BIT(1));");
-            c.createStatement().execute("CREATE INDEX uuid_index ON 2FA (uuid);");
+                        // Secret field
+                        if (!rs.getString("Type").equalsIgnoreCase("tinytext")) {
+                            c.createStatement().execute("alter table 2FA MODIFY secret TINYTEXT;");
+                            break;
+                        }
+                    }
+                    if (!hasAuthType) {
+                        c.createStatement().execute("alter table 2FA add authtype int DEFAULT 0;");
+                    }
+                }
+            } else {
+                c.createStatement().execute("CREATE TABLE 2FA(" +
+                        "uuid CHAR(32) PRIMARY KEY," +
+                        "ip VARCHAR(255)," +
+                        "secret TINYTEXT," +
+                        "authtype INT DEFAULT 0," +
+                        "locked BIT(1));");
+                c.createStatement().execute("CREATE INDEX uuid_index ON 2FA (uuid);");
+            }
         }
     }
 
@@ -69,7 +92,8 @@ public final class MySQLUserDataSource implements UserDataSource {
 
     @Override
     public UserData getUser(UUID id) throws IOException, SQLException {
-        if (Bukkit.isPrimaryThread() && !MCAuthenticator.isReload) throw new RuntimeException("Primary thread I/O");
+        if (Bukkit.isPrimaryThread() && !MCAuthenticator.isReload)
+            throw new RuntimeException("Primary thread I/O");
         try (Connection c = pool.getConnection()) {
             PreparedStatement p = c.prepareStatement("SELECT uuid, ip, secret, locked FROM 2FA WHERE uuid = ?;");
             p.setString(1, id.toString().replaceAll("-", ""));
@@ -78,6 +102,7 @@ public final class MySQLUserDataSource implements UserDataSource {
                 return new UpdatableFlagData(updateHook, id,
                         InetAddress.getByName(rs.getString("ip")),
                         rs.getString("secret"),
+                        rs.getInt("authtype"),
                         rs.getBoolean("locked"));
             } else {
                 return null;
@@ -87,7 +112,8 @@ public final class MySQLUserDataSource implements UserDataSource {
 
     @Override
     public UserData createUser(UUID id) {
-        UpdatableFlagData d = new UpdatableFlagData(updateHook, id, null, null, false);
+        UpdatableFlagData d = new UpdatableFlagData(updateHook, id, null, null,
+                -1, false);
         toUpdate.add(d);
         return d;
     }
@@ -111,7 +137,8 @@ public final class MySQLUserDataSource implements UserDataSource {
                 updateStatement.setString(1, upd.getId().toString().replaceAll("-", ""));
                 InetAddress lastAddress = upd.getLastAddress();
                 String lastHostAddress = null;
-                if (lastAddress != null) lastHostAddress = lastAddress.getHostAddress();
+                if (lastAddress != null)
+                    lastHostAddress = lastAddress.getHostAddress();
                 updateStatement.setString(2, lastHostAddress);
                 updateStatement.setString(3, upd.getSecret());
                 updateStatement.setBoolean(4, upd.isLocked(null));
@@ -130,7 +157,7 @@ public final class MySQLUserDataSource implements UserDataSource {
 
     @Override
     public String toString() {
-        return "(MySQLDataSource: "+pool.getJdbcUrl()+")";
+        return "(MySQLDataSource: " + pool.getJdbcUrl() + ")";
     }
 
     @Override

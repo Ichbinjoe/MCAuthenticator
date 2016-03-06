@@ -58,17 +58,20 @@ public final class DirectoryUserDataSource implements UserDataSource {
             JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
             JsonElement lastIp = jsonObject.get("lastIp");
             JsonElement secret = jsonObject.get("secret");
+            JsonElement authType = jsonObject.get("authtype");
             return new UpdatableFlagData(updateHook,
                     UUID.fromString(jsonObject.get("id").getAsString()),
                     lastIp != null ? InetAddress.getByName(lastIp.getAsString()) : null,
                     secret != null ? secret.getAsString() : null,
+                    authType != null ? authType.getAsInt(): 0,
                     jsonObject.get("locked").getAsBoolean());
         }
     }
 
     @Override
     public UserData createUser(UUID id) {
-        UpdatableFlagData d = new UpdatableFlagData(updateHook, id, null, null, false);
+        UpdatableFlagData d = new UpdatableFlagData(updateHook, id, null, null,
+                -1, false);
         update.add(d);
         return d;
     }
@@ -105,7 +108,7 @@ public final class DirectoryUserDataSource implements UserDataSource {
         o.addProperty("secret", d.getSecret());
         o.addProperty("lastIp", d.getLastAddress() != null ? d.getLastAddress().getHostAddress() : null);
         o.addProperty("locked", d.isLocked(null));
-
+        o.addProperty("authtype", d.getAuthType());
         try (FileWriter writer = new FileWriter(f)) {
             gson.toJson(o, writer);
         }

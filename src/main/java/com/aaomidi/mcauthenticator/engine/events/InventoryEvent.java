@@ -62,7 +62,7 @@ public final class InventoryEvent implements Listener {
     }
 
     public boolean isInQR(Player p) {
-        return instance.getCache().get(p.getUniqueId()).isViewingQRCode();
+        return instance.getCache().get(p.getUniqueId()).isInit();
     }
 
 }

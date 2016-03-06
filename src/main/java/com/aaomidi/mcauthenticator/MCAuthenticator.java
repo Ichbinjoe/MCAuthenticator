@@ -27,6 +27,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
+import java.util.Collection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
@@ -49,9 +50,6 @@ public final class MCAuthenticator extends JavaPlugin {
 
     @Getter
     private final UserCache cache = new UserCache(this);
-
-    @Getter
-    private Authenticator auth;
 
     public static boolean isReload = false;
 
@@ -108,7 +106,8 @@ public final class MCAuthenticator extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(listener, this);
     }
 
-    public void handlePlayer(Player player, UserData data) throws IOException, SQLException {
+    public void handlePlayer(Player player, UserData data)
+            throws IOException, SQLException {
         User user = this.getCache().join(player.getUniqueId(), data);
         if (user.authenticated()) {
             if (player.hasPermission("mcauthenticator.lock")) {
@@ -136,7 +135,8 @@ public final class MCAuthenticator extends JavaPlugin {
             getDataFolder().mkdirs();
             saveResource(configurationFile.getName(), false);
         }
-        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(configurationFile);
+        YamlConfiguration cfg = YamlConfiguration
+                .loadConfiguration(configurationFile);
         try {
             this.c = new Config(this, cfg);
         } catch (SQLException | IOException e) {
@@ -205,5 +205,9 @@ public final class MCAuthenticator extends JavaPlugin {
             getLogger().log(Level.SEVERE, "An exception occurred. At the time, we do not have any context to why this error is" +
                     " occurring.", e);
         }
+    }
+
+    public Collection<Authenticator> getAuthenticators() {
+        return c.getAuthenticators();
     }
 }

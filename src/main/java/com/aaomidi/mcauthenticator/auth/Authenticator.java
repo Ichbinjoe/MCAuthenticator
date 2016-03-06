@@ -1,5 +1,8 @@
 package com.aaomidi.mcauthenticator.auth;
 
+import com.aaomidi.mcauthenticator.model.User;
+import org.bukkit.entity.Player;
+
 /**
  * @author Joseph Hirschfeld <joe@ibj.io>
  * @date 2/28/16
@@ -10,9 +13,12 @@ package com.aaomidi.mcauthenticator.auth;
  */
 public interface Authenticator {
 
-    boolean authenticate(String secret, String input) throws Exception;
+    boolean authenticate(User user, String input) throws Exception;
 
-    //Caters to yubikey auto-public key detection
-    String secret(String lastSecret, String input);
+    boolean isFormat(String s);
+
+    void initUser(User u, Player p);
+
+    void quitUser(User u, Player p);
 
 }
