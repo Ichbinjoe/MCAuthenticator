@@ -81,7 +81,7 @@ public class RFC6238 implements Authenticator {
         }
 
         temporarySecrets.put(u, newKey);
-        if (u.isInventoryStored())
+        if (!u.isInventoryStored())
             u.storeInventory(p);
 
         ItemStack itemStack = new ItemStack(Material.MAP);
@@ -102,6 +102,11 @@ public class RFC6238 implements Authenticator {
 
         map.addRenderer(mapRenderer);
         p.sendMap(map);
+
+        String msg = mcAuthenticator.getC().message("sendAuthCode");
+        msg = msg.replaceAll("%code%", newKey);
+        msg = msg.replaceAll("%url%", getQRUrl(p.getName(), newKey));
+        mcAuthenticator.getC().send(p, msg);
     }
 
     @Override

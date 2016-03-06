@@ -88,7 +88,7 @@ public final class User {
     }
 
     public boolean init2fa(Player p) {
-        if (userData != null) { //Already has a secret
+        if (userData != null && userData.getSecret() != null) { //Already has a secret
             return false;
         }
 

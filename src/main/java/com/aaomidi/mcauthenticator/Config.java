@@ -54,12 +54,12 @@ public final class Config {
             Integer clientId = section.getInt("yubikey.clientId");
             String clientSecret = section.getString("yubikey.clientSecret");
             auth.getLogger().info("Using Yubikey based authenticator.");
-            if (clientSecret == null) {
-                auth.getLogger().info("The Yubikey configuration section does not appear to be set up correctly! Both clientId" +
-                        " and clientSecret must be filled in correctly! Otherwise, the authenticator may not function correctly.");
-                auth.getLogger().info("If you do not know these, they can be retrieved from here: https://upgrade.yubico.com/getapikey/");
+            if(clientSecret == null || (clientId == -1 && "secret".equals(clientSecret))) {
+                auth.getLogger().warning("The Yubikey configuration appears to be the default configuration/not configured!" +
+                        " In order for the Yubikey authentication to work, you must retrieve a client id and secret.");
+                auth.getLogger().warning("These may be retrieved from here: https://upgrade.yubico.com/getapikey/");
             }
-            this.authenticators.add(new Yubikey(clientId, clientSecret));
+            this.authenticators.add(new Yubikey(clientId, clientSecret, auth));
         }
 
         String backing = section.getString("dataBacking.type", "single");
