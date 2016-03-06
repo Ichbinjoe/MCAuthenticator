@@ -13,8 +13,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * @author Joseph Hirschfeld <joe@ibj.io>
@@ -34,6 +40,7 @@ public class RFC6238 implements Authenticator {
     public RFC6238(String serverIp, MCAuthenticator mcAuthenticator) {
         this.serverIp = serverIp;
         this.mcAuthenticator = mcAuthenticator;
+        validateServerTime();
     }
 
     @Override
@@ -123,5 +130,37 @@ public class RFC6238 implements Authenticator {
 
     private String createNewKey() {
         return gAuth.createCredentials().getKey();
+    }
+
+    private void validateServerTime() {
+        // Since 1.0.2
+        try {
+            String TIME_SERVER = "http://icanhazepoch.com";
+            HttpURLConnection timeCheckQuery =
+                    (HttpURLConnection) new URL(TIME_SERVER).openConnection();
+            timeCheckQuery.connect();
+            int responseCode = timeCheckQuery.getResponseCode();
+            if (responseCode != 200) {
+                mcAuthenticator.getLogger().info("Could not validate the server's time! Ensure" +
+                        " that the server's time is within specification!");
+                return;
+            }
+            byte[] response = new byte[1024]; // Response should never be over 1kB
+            InputStream inputStream = timeCheckQuery.getInputStream();
+            int len = inputStream.read(response);
+            String rsp = new String(response, 0, len, Charset.defaultCharset()).trim();
+            Long unixSeconds = Long.parseLong(rsp);
+            long myUnixSeconds = (System.currentTimeMillis() / 1000);
+            int diff = (int) (unixSeconds - myUnixSeconds);
+            if (Math.abs(diff) > 30) {
+                mcAuthenticator.getLogger().severe("Your server's Unix time is off by "
+                        + Math.abs(diff) + " seconds! 2FA may not work! Please "
+                        + "correct this to make sure 2FA works.");
+            }
+        } catch (IOException | NumberFormatException e) {
+            mcAuthenticator.getLogger().log(Level.WARNING, "Was not able to validate the server's" +
+                    " Unix time against an external service: Please ensure your" +
+                    " server's time is set correctly or 2FA may not operate right.", e);
+        }
     }
 }
