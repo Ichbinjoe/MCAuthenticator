@@ -105,7 +105,29 @@ server.
 All of the configuration is located in `plugins/MCAuthenticator/config.yml`. Each
 of the configuration options listed below are all located within this yml.
 
-### Server IP
+### Available Authentication Mechanisms
+
+Since `1.1.0`, MCAuthentication has supported multiple types of
+authentication mechanisms:
+
++ 2fa
++ Yubikey
+
+Each of these can be turned on and off within the config file under
+`authenticators`. When setting up 2FA, the user may use any of the
+configured authentication mechanisms. The plugin will auto-detect which
+mechanism they use, and authenticate them off of only that method in the
+future.
+
+### Yubikey
+
+In order to offer authentication through Yubikey, you must have a
+`clientId` as well as a `clientSecret`. Both of these are offered at
+https://upgrade.yubico.com/getapikey/. If you do not add these
+api credentials, Yubikey authentication will not function correctly.
+These should be entered under `yubikey` within the configuration.
+
+### GAuth
 
 The `serverIp` field specifies what will be displayed to the user within their
 2FA app.
