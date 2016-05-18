@@ -11,6 +11,10 @@ staff account and compromise a server in general.
 
 ## Popular 2FA (TOTP) Apps by Mobile Device Operating System
 
+### Windows Phone
+
++ [Authenticator](https://www.microsoft.com/store/apps/authenticator/9wzdncrfj3rj)
+
 ### Android
 
 + [Authy](https://play.google.com/store/apps/details?id=com.authy.authy&hl=en)
