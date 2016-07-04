@@ -95,7 +95,7 @@ public final class MySQLUserDataSource implements UserDataSource {
         if (Bukkit.isPrimaryThread() && !MCAuthenticator.isReload)
             throw new RuntimeException("Primary thread I/O");
         try (Connection c = pool.getConnection()) {
-            PreparedStatement p = c.prepareStatement("SELECT uuid, ip, secret, locked FROM 2FA WHERE uuid = ?;");
+            PreparedStatement p = c.prepareStatement("SELECT authtype, ip, secret, locked FROM 2FA WHERE uuid = ?;");
             p.setString(1, id.toString().replaceAll("-", ""));
             ResultSet rs = p.executeQuery();
             if (rs.next()) {
