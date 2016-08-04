@@ -76,6 +76,14 @@ public class RFC6238 implements Authenticator {
     @Override
     public void initUser(User u, Player p) {
         String newKey = createNewKey();
+        temporarySecrets.put(u, newKey);
+
+        String msg = mcAuthenticator.getC().message("sendAuthCode");
+        msg = msg.replaceAll("%code%", newKey);
+        msg = msg.replaceAll("%url%", getQRUrl(p.getName(), newKey));
+        mcAuthenticator.getC().send(p, msg);
+
+        if (!mcAuthenticator.getC().isInventoryTampering()) return;
 
         ImageMapRenderer mapRenderer;
         try {
@@ -87,7 +95,6 @@ public class RFC6238 implements Authenticator {
             return;
         }
 
-        temporarySecrets.put(u, newKey);
         if (!u.isInventoryStored())
             u.storeInventory(p);
 
@@ -106,14 +113,8 @@ public class RFC6238 implements Authenticator {
             map.removeRenderer(r);
         }
 
-
         map.addRenderer(mapRenderer);
         p.sendMap(map);
-
-        String msg = mcAuthenticator.getC().message("sendAuthCode");
-        msg = msg.replaceAll("%code%", newKey);
-        msg = msg.replaceAll("%url%", getQRUrl(p.getName(), newKey));
-        mcAuthenticator.getC().send(p, msg);
     }
 
     @Override

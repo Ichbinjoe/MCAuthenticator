@@ -23,6 +23,12 @@ nb-configuration.xml
 *.iws
 .idea/
 
+# Eclipse
+/.classpath
+/.project
+/.settings
+/*.jardesc
+
 ## Windows
 Thumbs.db
 ehthumbs.db

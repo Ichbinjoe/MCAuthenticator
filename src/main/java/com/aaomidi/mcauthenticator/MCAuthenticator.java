@@ -79,7 +79,7 @@ public final class MCAuthenticator extends JavaPlugin {
             } else {
                 if (!user.authenticate(player.getAddress().getAddress())) {
                     //User must enter code
-                    user.storeInventory(player);
+                    if (getC().isInventoryTampering()) user.storeInventory(player);
                     c.send(player, c.message("authenticationPrompt"));
                 } else {
                     c.send(player, c.message("ipPreAuthenticated"));
