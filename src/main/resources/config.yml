@@ -26,6 +26,11 @@ yubikey:
 #log in each time they are authenticated
 forceSameIPAuthentication: false
 
+#If this option is false, the plugin will not tamper with the player inventory, and all authentication will be chat based.
+#If this option is true, the plugin will stash away the player inventory and display the QR code in a map.
+#Leaving this option at true is recommended but may conflict with other inventory manager plugins.
+inventoryTampering: true
+
 dataBacking:
 # This plugin supports 3 independant datastorage mechanisms. At the current time, there is no way to convert between the
 # two, however, this may be added in the future.
