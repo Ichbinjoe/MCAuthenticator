@@ -1,9 +1,8 @@
 name: MCAuthenticator
-main: com.aaomidi.mcauthenticator.MCAuthenticator
+main: io.ibj.mcauthenticator.MCAuthenticator
 version: ${project.version}
 authors: ['Joseph Hirschfeld <joe@ibj.io>','aaomidi']
 description: "Provides 2FA ability to minecraft servers"
-website: "https://ibj.io/2fa"
 
 commands:
   auth:

@@ -1,5 +1,5 @@
 name: MCAuthenticator
-main: com.aaomidi.mcauthenticator.bungee.BungeeMCAuthenticator
+main: io.ibj.mcauthenticator.bungee.BungeeMCAuthenticator
 version: ${project.version}
 author: 'Joseph Hirschfeld <joe@ibj.io>'
 description: "Provides 2FA ability to minecraft servers"
