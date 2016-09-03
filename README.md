@@ -28,8 +28,8 @@ staff account and compromise a server in general.
 ## Installation
 
 To install MCAuthenticator, you simply put the `MCAuthenticator.jar` within
-the `plugins/` folder of your Bukkit/Spigot server. Once you start the server,
-the plugin will generate a configuration as described below.
+the `plugins/` folder of your Bukkit/Spigot/BungeeCord server. Once you start the 
+server, the plugin will generate a configuration as described below.
 
 ### Compatibility
 
@@ -194,6 +194,15 @@ be set to a username and password that is able to access the database.
 
 To build MCAuthenticator, run `mvn package` in a command terminal, and the
 result of the build will save the jar to `target/MCAuthenticator-<version>.jar`.
+
+### BungeeCord Mode
+
+BungeeCord support will only require one authentication per player join, not every
+time the player switches servers, does not require same IP to be true, and will deny
+BungeeCord commands until the player is authenticated. To enable BungeeCord support,
+`enable` under the `bungee` should be set to `true`, and `channel` should be set to
+the same channel as the BungeeCord plugin's `pluginChannel` is set to. BungeeCord
+mode requires that the plugin also be installed on the BungeeCord instance(s).
 
 ## Contributing
 
