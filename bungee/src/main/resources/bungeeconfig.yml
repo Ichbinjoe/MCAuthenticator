@@ -1,0 +1,5 @@
+# Configures the bungee plugin for MCAuthenticator
+
+# Sets the channel which to send authentication notifications over. Should be
+# the same on the bungee and bukkit plugin varieties
+pluginChannel: "MCAuthenticator"
