@@ -32,6 +32,7 @@ public final class MySQLUserDataSource implements UserDataSource {
             }
         };
         HikariConfig cfg = new HikariConfig();
+        cfg.setDriverClassName("com.mysql.jdbc.Driver");
         cfg.setJdbcUrl(connectionURL);
         cfg.setUsername(username);
         cfg.setPassword(password);
