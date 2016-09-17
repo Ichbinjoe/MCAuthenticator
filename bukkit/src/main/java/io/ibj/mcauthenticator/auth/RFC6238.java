@@ -136,7 +136,7 @@ public class RFC6238 implements Authenticator {
     private void validateServerTime() {
         // Since 1.0.2
         try {
-            String TIME_SERVER = "https://icanhazepoch.com";
+            String TIME_SERVER = "http://icanhazepoch.com";
             HttpURLConnection timeCheckQuery =
                     (HttpURLConnection) new URL(TIME_SERVER).openConnection();
             timeCheckQuery.setReadTimeout(4000);
