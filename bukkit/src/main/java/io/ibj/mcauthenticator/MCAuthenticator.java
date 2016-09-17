@@ -53,6 +53,8 @@ public final class MCAuthenticator extends JavaPlugin {
         registerEvent(new ConnectionEvent(this));
         registerEvent(new MoveEvent(this));
         registerEvent(new InventoryEvent(this));
+        registerEvent(new InteractEvent(this));
+        registerEvent(new BuildEvent(this));
 
         this.configurationFile = new File(getDataFolder(), "config.yml");
         reload();
