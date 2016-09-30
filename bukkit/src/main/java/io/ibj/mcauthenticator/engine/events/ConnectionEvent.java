@@ -51,7 +51,7 @@ public final class ConnectionEvent implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent e) {
         User leave = instance.getCache().leave(e.getPlayer().getUniqueId());
         if (leave != null) {
