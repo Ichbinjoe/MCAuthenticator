@@ -98,6 +98,7 @@ public final class MySQLUserDataSource implements UserDataSource {
         try (Connection c = pool.getConnection()) {
             PreparedStatement p = c.prepareStatement("SELECT authtype, ip, secret, locked FROM 2FA WHERE uuid = ?;");
             p.setString(1, id.toString().replaceAll("-", ""));
+            p.setQueryTimeout(5);
             ResultSet rs = p.executeQuery();
             if (rs.next()) {
                 return new UpdatableFlagData(updateHook, id,
