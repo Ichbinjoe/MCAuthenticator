@@ -49,15 +49,15 @@ public final class MCAuthenticator extends JavaPlugin {
         getCommand("auth").setExecutor(commandHandler);
         commandHandler.registerCommands();
 
+        this.configurationFile = new File(getDataFolder(), "config.yml");
+        reload();
+
         registerEvent(new ChatEvent(this));
         registerEvent(new ConnectionEvent(this));
         registerEvent(new MoveEvent(this));
         registerEvent(new InventoryEvent(this));
         registerEvent(new InteractEvent(this));
         registerEvent(new BuildEvent(this));
-
-        this.configurationFile = new File(getDataFolder(), "config.yml");
-        reload();
     }
 
     private void registerEvent(Listener listener) {
