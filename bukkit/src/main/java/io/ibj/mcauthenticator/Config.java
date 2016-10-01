@@ -79,7 +79,8 @@ public final class Config {
                 ConfigurationSection mysql = section.getConfigurationSection("dataBacking.mysql");
                 this.dataSource = new MySQLUserDataSource(mysql.getString("url", "jdbc:mysql://localhost:3306/db"),
                         mysql.getString("username"),
-                        mysql.getString("password"));
+                        mysql.getString("password"),
+                        mysql.getInt("queryTimeout", 0));
                 break;
             default:
                 throw new IllegalArgumentException("The dataBacking type '" + backing + "' doesn't exist.");

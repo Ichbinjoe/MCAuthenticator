@@ -24,7 +24,8 @@ import java.util.UUID;
 
 public final class MySQLUserDataSource implements UserDataSource {
 
-    public MySQLUserDataSource(String connectionURL, String username, String password) throws SQLException {
+    public MySQLUserDataSource(String connectionURL, String username, String password, int queryTimeout) throws SQLException {
+        this.queryTimeout = queryTimeout;
         this.updateHook = new UpdateHook() {
             @Override
             public void update(UpdatableFlagData me) {
@@ -87,6 +88,7 @@ public final class MySQLUserDataSource implements UserDataSource {
 
     private final HikariDataSource pool;
     private final UpdateHook updateHook;
+    private final int queryTimeout;
 
     private volatile Set<UpdatableFlagData> toUpdate = new HashSet<>();
     private volatile Set<UUID> toDelete = new HashSet<>();
@@ -98,6 +100,7 @@ public final class MySQLUserDataSource implements UserDataSource {
         try (Connection c = pool.getConnection()) {
             PreparedStatement p = c.prepareStatement("SELECT authtype, ip, secret, locked FROM 2FA WHERE uuid = ?;");
             p.setString(1, id.toString().replaceAll("-", ""));
+            p.setQueryTimeout(queryTimeout);
             ResultSet rs = p.executeQuery();
             if (rs.next()) {
                 return new UpdatableFlagData(updateHook, id,
