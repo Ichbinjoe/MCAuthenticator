@@ -60,6 +60,7 @@ dataBacking:
     url: "jdbc:mysql://localhost:3306/db"
     username: "test"
     password: "test"
+    queryTimeout: 5
 
 #Messages section. Each message uses standard '&' color codes.
 #A message can be split into multiple lines using the \n character.
