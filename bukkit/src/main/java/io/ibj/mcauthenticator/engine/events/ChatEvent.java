@@ -26,26 +26,24 @@ public final class ChatEvent implements Listener {
 
         if (user.authenticated()) {
             Iterator<Player> recipients = event.getRecipients().iterator();
-            while(recipients.hasNext()) {
+            while (recipients.hasNext()) {
                 User u = instance.getCache().get(recipients.next().getUniqueId());
-                if(!u.authenticated()) recipients.remove();
+                if (!u.authenticated()) recipients.remove();
             }
             return;
         }
 
-        if (instance.getC().getBungeePluginChannel() == null) {
-            boolean authenticate = false;
-            try {
-                authenticate = user.authenticate(event.getMessage(), player);
-            } catch (Exception e) {
-                instance.getC().sendDirect(player, "&cThere was a fatal exception when trying to authenticate you!");
-            }
+        boolean authenticate = false;
+        try {
+            authenticate = user.authenticate(event.getMessage(), player);
+        } catch (Exception e) {
+            instance.getC().sendDirect(player, "&cThere was a fatal exception when trying to authenticate you!");
+        }
 
-            if (authenticate) {
-                instance.getC().send(player, instance.getC().message("authenticated"));
-            } else {
-                instance.getC().send(player, instance.getC().message("authFailed"));
-            }
+        if (authenticate) {
+            instance.getC().send(player, instance.getC().message("authenticated"));
+        } else {
+            instance.getC().send(player, instance.getC().message("authFailed"));
         }
 
         event.setCancelled(true);
