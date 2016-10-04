@@ -28,7 +28,7 @@ public final class ChatEvent implements Listener {
             Iterator<Player> recipients = event.getRecipients().iterator();
             while(recipients.hasNext()) {
                 User u = instance.getCache().get(recipients.next().getUniqueId());
-                if(!u.authenticated()) recipients.remove();
+                if(u != null && !u.authenticated()) recipients.remove();
             }
             return;
         }
