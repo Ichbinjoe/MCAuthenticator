@@ -15,8 +15,10 @@ import org.bukkit.map.MapView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,7 +82,10 @@ public class RFC6238 implements Authenticator {
 
         String msg = mcAuthenticator.getC().message("sendAuthCode");
         msg = msg.replaceAll("%code%", newKey);
-        msg = msg.replaceAll("%url%", getQRUrl(p.getName(), newKey));
+        try {
+            msg = msg.replaceAll("%url%", getQRUrl(p.getName(), newKey));
+        } catch (UnsupportedEncodingException ignored) { // will not be thrown
+        }
         mcAuthenticator.getC().send(p, msg);
 
         if (!mcAuthenticator.getC().isInventoryTampering()) return;
@@ -123,10 +128,10 @@ public class RFC6238 implements Authenticator {
         u.reverseInventory(p);
     }
 
-    private String getQRUrl(String username, String secret) {
+    private String getQRUrl(String username, String secret) throws UnsupportedEncodingException {
         if (secret == null)
             return null;
-        return String.format(googleFormat, username, serverIp, secret);
+        return String.format(googleFormat, username, URLEncoder.encode(serverIp, "UTF-8"), secret);
     }
 
     private String createNewKey() {
