@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Joseph Hirschfeld <joe@ibj.io>
@@ -14,7 +15,7 @@ import java.util.UUID;
  */
 public final class UserCache {
 
-    private final Map<UUID, User> userMap = new HashMap<>();
+    private final Map<UUID, User> userMap = new ConcurrentHashMap<>();
     private final MCAuthenticator authenticator;
 
     public UserCache(MCAuthenticator authenticator) {
