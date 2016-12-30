@@ -89,7 +89,6 @@ public final class User {
     }
 
     public void remoteAuthenticated() {
-        System.out.println("REMOTE AUTH");
         isInit = false;
         authenticated = true;
     }
