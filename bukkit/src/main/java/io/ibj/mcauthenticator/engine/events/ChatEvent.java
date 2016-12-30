@@ -24,6 +24,11 @@ public final class ChatEvent implements Listener {
         Player player = event.getPlayer();
         User user = instance.getCache().get(player.getUniqueId());
 
+        if (user == null) {
+            event.getRecipients().clear();
+            return;
+        }
+
         if (user.authenticated()) {
             Iterator<Player> recipients = event.getRecipients().iterator();
             while(recipients.hasNext()) {
@@ -56,7 +61,7 @@ public final class ChatEvent implements Listener {
         Player player = event.getPlayer();
         User user = instance.getCache().get(player.getUniqueId());
 
-        if (user.authenticated()) return;
+        if (user != null && user.authenticated()) return;
         instance.getC().send(player, instance.getC().message("notAuthed"));
         event.setCancelled(true);
     }

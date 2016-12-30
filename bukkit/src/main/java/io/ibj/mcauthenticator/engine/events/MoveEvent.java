@@ -22,16 +22,16 @@ public final class MoveEvent implements Listener {
         Location from = event.getFrom();
         Location to = event.getTo();
 
-        Player player = event.getPlayer();
-        User u = instance.getCache().get(player.getUniqueId());
-
         if (from.getBlockX() == to.getBlockX()
                 && from.getBlockY() == to.getBlockY()
                 && from.getBlockZ() == to.getBlockZ()) {
             return;
         }
 
-        if (u.authenticated()) return;
+        Player player = event.getPlayer();
+        User u = instance.getCache().get(player.getUniqueId());
+
+        if (u != null && u.authenticated()) return;
 
         event.setTo(from);
     }

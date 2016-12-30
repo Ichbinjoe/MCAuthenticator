@@ -19,7 +19,7 @@ public class BuildEvent implements Listener {
         Player player = event.getPlayer();
         User u = instance.getCache().get(player.getUniqueId());
 
-        if (u.authenticated()) return;
+        if (u != null && u.authenticated()) return;
 
         event.setCancelled(true);
     }
@@ -29,7 +29,7 @@ public class BuildEvent implements Listener {
         Player player = event.getPlayer();
         User u = instance.getCache().get(player.getUniqueId());
 
-        if (u.authenticated()) return;
+        if (u != null && u.authenticated()) return;
 
         event.setCancelled(true);
     }

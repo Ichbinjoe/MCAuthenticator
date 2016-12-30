@@ -1,6 +1,7 @@
 package io.ibj.mcauthenticator.engine.events;
 
 import io.ibj.mcauthenticator.MCAuthenticator;
+import io.ibj.mcauthenticator.model.User;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -58,11 +59,13 @@ public final class InventoryEvent implements Listener {
     }
 
     private boolean auth(PlayerEvent e) {
-        return instance.getCache().get(e.getPlayer().getUniqueId()).authenticated();
+        User user = instance.getCache().get(e.getPlayer().getUniqueId());
+        return user != null && user.authenticated();
     }
 
     public boolean isInQR(Player p) {
-        return instance.getCache().get(p.getUniqueId()).isInit();
+        User user = instance.getCache().get(p.getUniqueId());
+        return user != null && user.isInit();
     }
 
 }
