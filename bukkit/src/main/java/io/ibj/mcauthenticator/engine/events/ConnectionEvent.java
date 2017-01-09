@@ -42,7 +42,7 @@ public final class ConnectionEvent implements Listener {
 
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerConnect(final PlayerJoinEvent event) {
         try {
             instance.handlePlayer(event.getPlayer(), userDataCache.remove(event.getPlayer().getUniqueId()));
