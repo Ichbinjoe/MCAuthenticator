@@ -26,7 +26,6 @@ public class BungeeMCAuthenticator extends Plugin implements Listener {
 
     private String pluginMessageChannel;
 
-
     @Override
     public void onEnable() {
         getDataFolder().mkdir();
@@ -77,13 +76,12 @@ public class BungeeMCAuthenticator extends Plugin implements Listener {
             authenticatedUsers.add(((ProxiedPlayer) e.getReceiver()).getUniqueId());
         else if (e.getData()[0] == 0x01)
             authenticatedUsers.remove(((ProxiedPlayer) e.getReceiver()).getUniqueId());
-    }
-
-    @EventHandler
-    public void onServerSwitch(ServerConnectedEvent e) {
-        if (authenticatedUsers.contains(e.getPlayer().getUniqueId()))
-            e.getServer().sendData(pluginMessageChannel, new byte[]{0x00});
-        else e.getServer().sendData(pluginMessageChannel, new byte[]{0x01});
+        else if (e.getData()[0] == 0x02) {
+            if (authenticatedUsers.contains(((ProxiedPlayer) e.getReceiver()).getUniqueId()))
+                ((ProxiedPlayer) e.getReceiver()).getServer().sendData(pluginMessageChannel, new byte[]{0x00});
+            else
+                ((ProxiedPlayer) e.getReceiver()).getServer().sendData(pluginMessageChannel, new byte[]{0x01});
+        }
     }
 
     @EventHandler
