@@ -23,6 +23,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 /**
  * @author Joseph Hirschfeld <joe@ibj.io>
@@ -32,9 +33,11 @@ import java.util.logging.Level;
 public class RFC6238 implements Authenticator {
 
     private static final GoogleAuthenticator gAuth = new GoogleAuthenticator();
-    private static final transient String googleFormat =
+    private static final String googleFormat =
             "https://www.google.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=" +
                     "otpauth://totp/%s@%s%%3Fsecret%%3D%s";
+    private static final Pattern properInputPattern = Pattern.compile("[0-9][0-9][0-9] ?[0-9][0-9][0-9]");
+
     private final String serverIp;
     private final Map<User, String> temporarySecrets = new HashMap<>();
     private final MCAuthenticator mcAuthenticator;
@@ -47,6 +50,14 @@ public class RFC6238 implements Authenticator {
 
     @Override
     public boolean authenticate(User u, Player p, String input) {
+
+        // GH-29 - Google Authenticator appears to have 2 3 digit numbers instead
+        // of 1 6 digit number - some users misconstrue this by putting a space in
+        // between the code. Allow this behavior
+
+        if (input.charAt(3) == ' ')
+            input = input.substring(0, 3) + input.substring(4);
+
         Integer code;
         try {
             code = Integer.parseInt(input);
@@ -72,7 +83,7 @@ public class RFC6238 implements Authenticator {
 
     @Override
     public boolean isFormat(String s) {
-        return s.matches("^\\d{6}$");
+        return properInputPattern.matcher(s).matches();
     }
 
     @Override
