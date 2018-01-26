@@ -1,0 +1,5 @@
+pipeline:
+  build:
+    image: maven:3.5.2-jdk-9-slim
+    commands:
+      - mvn package
