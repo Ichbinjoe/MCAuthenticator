@@ -1,0 +1,23 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
+dependencies {
+    compile project(":mcauthenticator-bukkit")
+    compile project(":mcauthenticator-bungeecord")
+    compile project(":mcauthenticator-sponge")
+}
+
+shadowJar {
+    baseName = 'mcauthenticator'
+    classifier = null
+}
+
+build.dependsOn shadowJar
