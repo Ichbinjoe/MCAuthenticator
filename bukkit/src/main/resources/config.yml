@@ -37,7 +37,7 @@ bungee:
   # Whether bungee mode is enabled. Plugin must be on bungee server with same channel
   enabled: false
   # Channel to send messages over. Must be same on Bungee
-  channel: "MCAuthenticator"
+  channel: "mcauthenticator:auth"
 
 dataBacking:
 # This plugin supports 3 independant datastorage mechanisms. At the current time, there is no way to convert between the
