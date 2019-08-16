@@ -101,6 +101,10 @@ public class RFC6238 implements Authenticator {
 
         if (!mcAuthenticator.getC().isInventoryTampering()) return;
 
+        sendAndRenderMap(u, p, newKey);
+    }
+
+    private void sendAndRenderMap(User u, Player p, String newKey) {
         ImageMapRenderer mapRenderer;
         try {
             mapRenderer = new ImageMapRenderer(p.getName(), newKey, serverIp);
@@ -114,22 +118,13 @@ public class RFC6238 implements Authenticator {
         if (!u.isInventoryStored())
             u.storeInventory(p);
 
-        ItemStack itemStack = new ItemStack(Material.MAP);
         MapView map = Bukkit.createMap(p.getWorld());
-        itemStack.setDurability(map.getId());
-        itemStack.setAmount(0);
-        p.getInventory().setHeldItemSlot(0);
-        p.setItemInHand(itemStack);
-
-        Location playerLocation = p.getLocation();
-        playerLocation.setPitch(90);
-        p.teleport(playerLocation);
-
-        for (MapRenderer r : map.getRenderers()) {
-            map.removeRenderer(r);
-        }
-
+        map.getRenderers().forEach(map::removeRenderer);
         map.addRenderer(mapRenderer);
+
+        ItemStack mapItem = new ItemStack(Material.MAP, 1, map.getId());
+        p.getInventory().setHeldItemSlot(0);
+        p.getInventory().setItemInMainHand(mapItem);
         p.sendMap(map);
     }
 
