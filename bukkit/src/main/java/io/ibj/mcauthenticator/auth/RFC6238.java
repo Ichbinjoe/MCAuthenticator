@@ -157,6 +157,7 @@ public class RFC6238 implements Authenticator {
                     (HttpURLConnection) new URL(TIME_SERVER).openConnection();
             timeCheckQuery.setReadTimeout(4000);
             timeCheckQuery.setConnectTimeout(4000);
+            timeCheckQuery.addRequestProperty("User-Agent", "MCAuthenticator (time check)");
             timeCheckQuery.connect();
             int responseCode = timeCheckQuery.getResponseCode();
             if (responseCode != 200) {

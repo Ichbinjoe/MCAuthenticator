@@ -20,8 +20,8 @@
                 <configuration>
                     <relocations>
                         <relocation>
-                            <pattern>com.google</pattern>
-                            <shadedPattern>io.ibj.mcauthenticator.libs.google</shadedPattern>
+                            <pattern>com.google.zxing</pattern>
+                            <shadedPattern>io.ibj.mcauthenticator.libs.google.zxing</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.warrenstrange.googleauth</pattern>
@@ -34,14 +34,6 @@
                         <relocation>
                             <pattern>com.zaxxer.hikari</pattern>
                             <shadedPattern>io.ibj.mcauthenticator.libs.hikari</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>mkremins.fanciful</pattern>
-                            <shadedPattern>io.ibj.mcauthenticator.libs.fanciful</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>net.amoebaman</pattern>
-                            <shadedPattern>io.ibj.mcauthenticator.libs.amoebaman</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.apache</pattern>
