@@ -13,17 +13,20 @@ staff account and compromise a server in general.
 
 ### Windows Phone
 
++ [Microsoft Authenticator](https://www.microsoft.com/en-us/p/microsoft-authenticator/9nblgggzmcj6)
 + [Authenticator](https://www.microsoft.com/store/apps/authenticator/9wzdncrfj3rj)
 
 ### Android
 
 + [Authy](https://play.google.com/store/apps/details?id=com.authy.authy&hl=en)
 + [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en)
++ [Microsoft Authenticator](https://play.google.com/store/apps/details?id=com.azure.authenticator)
 
 ### iOS
 
 + [Authy](https://itunes.apple.com/us/app/authy/id494168017?mt=8)
 + [Google Authenticator](https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8)
++ [Microsoft Authenticator](https://apps.apple.com/us/app/microsoft-authenticator/id983156458)
 
 ## Installation
 
